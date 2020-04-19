@@ -41,8 +41,46 @@
 
       <el-main style="padding: 0">
         <div id="main-main">
-          <div id="main-left">left</div>
-          <div id="main-middle">middle</div>
+          <div id="main-left">
+            <el-tabs type="border-card" style="height:50%;padding: 0">
+              <el-tab-pane label="美文名著">
+                <div>
+                  <ul class="ul-ul">
+                    <li>
+                      <div class="ul-left">
+                        <div class="li-image">
+                          <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icon-xuanhuan" />
+                          </svg>
+                        </div>
+                        <div class="li-concent">
+                          <span>玄幻</span>
+                          <span>1569</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="li-image">
+                          <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icon-qihuan" />
+                          </svg>
+                        </div>
+                        <div class="li-concent">
+                          <span>奇幻</span>
+                          <span>3354</span>
+                        </div>
+                      </div>
+                    </li>
+                    <li>2</li>
+                    <li>3</li>
+                  </ul>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="休闲娱乐"></el-tab-pane>
+            </el-tabs>
+          </div>
+          <div id="main-middle">
+            <div id="middle-"></div>
+          </div>
           <div id="main-right">right</div>
         </div>
       </el-main>
@@ -104,7 +142,7 @@ body {
   margin: 0;
   padding: 0;
 }
-#main-main{
+#main-main {
   margin: auto;
   width: 80%;
   height: 100%;
@@ -125,6 +163,40 @@ body {
   width: 19%;
   height: 100%;
   float: left;
+  border: 1px solid red;
+}
+.ul-ul {
+  padding: 0;
+  margin: 0px;
+}
+.ul-ul li {
+  list-style: none;
+  width: 100%;
+  height: 50px;
+}
+.ul-ul li:nth-child(odd) {
+  background-color: rgb(218, 214, 214);
+}
+.ul-ul li:nth-child(even) {
+  background-color: rgb(243, 237, 237);
+}
+.ul-left {
+  float: left;
+}
+.ul-ul li .li-image {
+  width: 45%;
+  height: 100%;
+  float: left;
+  border: 1px solid red;
+  line-height: 50%;
+}
+.ul-ul li .li-image .icon {
+  font-size: 25px;
+}
+.ul-ul li .li-concent {
+  float: left;
+  width: 49%;
+  height: 100%;
   border: 1px solid red;
 }
 </style>
