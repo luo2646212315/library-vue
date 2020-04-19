@@ -13,8 +13,17 @@ export const loginByLocal = (userName,userPassword) =>{
 export const qqLogin = () =>{
     return axios.get(base.baseUrl+"/userInfo/auth/loginByQQ")
 }
+//检查邮箱是否已经被注册
 export const checkEmailExist = params =>{
-    return axios.get(base.baseUrl+"/userInfo/auth/register/checkEmailExist",{params:params})
+    return axios.get(base.baseUrl+"/userInfo/auth/checkEmailExist",params)
+}
+//检查昵称是否已经被注册
+export const checkUserNickNameExist = params =>{
+    return axios.get(base.baseUrl+"/userInfo/auth/checkUserNickNameExist",params)
+}
+//检查手机号是否已经被注册
+export const checkUserPhoneNameExist = params =>{
+    return axios.get(base.baseUrl+"/userInfo/checkUserPhoneNameExist",params)
 }
 //注册发送邮箱验证码
 export const sendEmailCode = email =>{

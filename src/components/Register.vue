@@ -92,8 +92,17 @@
             <div v-html="secondRuleForm.secondBoxMsg"></div>
           </el-form>
         </div>
+        <div v-show="active==2" id="third-step">
+          <p>{{secondRuleForm.nickName}}，恭喜您注册成功，{{count}}秒后自动跳转登录页面！！</p>
+          <p>你也可以点击<router-link tag="a" to="/loginRegisterForget">去登陆</router-link>，立即跳转</p>
+        </div>
       </div>
-      <el-button :disabled="fatherNext" style="margin-top: 10px; magin-left:100px" @click="next">下一步</el-button>
+      <el-button
+        v-if="nextButton"
+        :disabled="fatherNext"
+        style="margin-top: 10px; magin-left:100px"
+        @click="next"
+      >下一步</el-button>
     </div>
   </div>
 </template>
@@ -103,17 +112,29 @@ import Silder from "../components/Silder.vue";
 import api from "../api/index";
 export default {
   data() {
+    //检查邮箱是否被注册
     var checkEmailExist = (rule, value, callback) => {
-      api.checkEmailExist().then(
-        res=>{
-          console.log(res);
+      api.checkEmailExist({ email: this.firstRuleForm.email }).then(res => {
+        console.log(res);
+        if (res.data[0] == true) {
+          return callback(new Error("该邮箱已被注册！"));
+        } else {
+          return callback();
         }
-      );
-      if (this.secondRuleForm.password != value) {
-        return callback(new Error("两次输入的密码不一致"));
-      } else {
-        return callback();
-      }
+      });
+    };
+    //检查昵称是否被注册
+    var checkUserNickNameExist = (rule, value, callback) => {
+      api
+        .checkUserNickNameExist({ nickName: this.secondRuleForm.nickName })
+        .then(res => {
+          console.log(res);
+          if (res.data[0] == true) {
+            return callback(new Error("该昵称已被注册！"));
+          } else {
+            return callback();
+          }
+        });
     };
     //检查两次输入密码是否相同
     var checkPassword = (rule, value, callback) => {
@@ -126,11 +147,13 @@ export default {
     return {
       active: 0,
       yanInput: false,
-      fatherNext: true,
+      nextButton: true,
+      fatherNext: true,//
       sonNext: false,
       buttonName: "发送验证码",
       isSend: false,
       time: 60,
+      count:"",
       firstRuleForm: {
         email: "",
         yan: "",
@@ -151,7 +174,7 @@ export default {
             message: "请输入正确的邮箱格式",
             trigger: "blur"
           },
-           { required: true, trigger: "blur", validator: checkEmailExist }
+          { required: true, trigger: "blur", validator: checkEmailExist }
         ],
         yan: [{ required: true, message: "请输入验证码", trigger: "blur" }],
         nickName: [
@@ -161,7 +184,8 @@ export default {
             max: 6,
             message: "长度在 1 到 6 个字符",
             trigger: "blur"
-          }
+          },
+          { required: true, trigger: "blur", validator: checkUserNickNameExist }
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
@@ -183,6 +207,9 @@ export default {
   },
   methods: {
     next() {
+      if (this.active == 2) {
+        this.timeGo();
+      }
       if (this.active == 1) {
         this.insertUser("secondRuleForm");
       }
@@ -212,25 +239,25 @@ export default {
     },
     //按钮倒计时
     sendMsg() {
-      var email_reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-      var sendFlag = email_reg.test(this.firstRuleForm.email);
-      if (!sendFlag) {
-        return;
-      }
-      //发送验证码
-      this.sendYanCode();
-      let me = this;
-      me.isSend = true;
-      let interval = window.setInterval(function() {
-        me.buttonName = me.time + "秒后重新发送";
-        --me.time;
-        if (me.time < 0) {
-          me.buttonName = "重新发送";
-          me.time = 60;
-          me.isSend = false;
-          window.clearInterval(interval);
+      this.$refs.firstRuleForm.validateField("email", emailError => {
+        console.log(`${emailError}**************`);
+        if (!emailError) {
+          //发送验证码
+          this.sendYanCode();
+          let me = this;
+          me.isSend = true;
+          let interval = window.setInterval(function() {
+            me.buttonName = me.time + "秒后重新发送";
+            --me.time;
+            if (me.time < 0) {
+              me.buttonName = "重新发送";
+              me.time = 60;
+              me.isSend = false;
+              window.clearInterval(interval);
+            }
+          }, 1000);
         }
-      }, 1000);
+      });
     },
     //发送验证码
     sendYanCode() {
@@ -256,23 +283,47 @@ export default {
             userNickName: this.secondRuleForm.nickName,
             userPassword: this.secondRuleForm.password,
             userEmail: this.firstRuleForm.email
-          }
-          api
-            .insertUser(userInfo)
-            .then(res => {
-              console.log(res);
-              this.active++;
-            });
+          };
+          api.insertUser(userInfo).then(res => {
+            console.log(res);
+            this.nextButton = false;
+            this.active++;
+          });
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+    //5秒后进入跳转页面
+    timeGo() {
+      const TIME_COUNT = 5;
+      if (!this.timer) {
+        this.count = TIME_COUNT;
+        this.show = false;
+        this.timer = setInterval(() => {
+          if (this.count > 0 && this.count <= TIME_COUNT) {
+            this.count--;
+          } else {
+            this.show = true;
+            clearInterval(this.timer);
+            this.timer = null;
+            //跳转的页面写在此处
+            this.$router.push({
+              path: "/loginRegisterForget"
+            });
+          }
+        }, 1000);
+      }
     }
   },
   watch: {
     "firstRuleForm.yan": function() {
-      this.fatherNext = false;
+      if (this.firstRuleForm.yan.length > 0) {
+        this.fatherNext = false;
+      } else {
+        this.fatherNext = true;
+      }
     }
   }
 };
@@ -285,7 +336,7 @@ export default {
   height: 400px;
   width: 500px;
   margin: auto;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 .el-step__head {
   text-align: left;
@@ -299,7 +350,7 @@ export default {
   height: 240px;
   margin: auto;
   margin-top: 30px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   margin-left: 0px;
 }
 .yan-btn {
