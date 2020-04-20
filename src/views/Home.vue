@@ -38,7 +38,6 @@
           </el-menu>
         </div>
       </el-header>
-
       <el-main style="padding: 0">
         <div id="main-main">
           <div id="main-left">
@@ -46,40 +45,73 @@
               <el-tab-pane label="美文名著">
                 <div>
                   <ul class="ul-ul">
-                    <li>
-                      <div class="ul-left">
+                    <li v-for="item in bookTypes" :key="item.id">
+                      <div
+                        v-for="(i,index) in item.bookType"
+                        :key="i.type"
+                        @click="kk()"
+                        :class="(index%2)==0?'ul-left':'ul-right'"
+                      >
                         <div class="li-image">
-                          <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-xuanhuan" />
-                          </svg>
+                          <div>
+                            <svg class="icon" aria-hidden="true">
+                              <use :xlink:href="i.icon" />
+                            </svg>
+                          </div>
                         </div>
                         <div class="li-concent">
-                          <span>玄幻</span>
-                          <span>1569</span>
-                        </div>
-                      </div>
-                      <div>
-                        <div class="li-image">
-                          <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-qihuan" />
-                          </svg>
-                        </div>
-                        <div class="li-concent">
-                          <span>奇幻</span>
-                          <span>3354</span>
+                          <div class="type">
+                            <em>{{i.type}}</em>
+                          </div>
+                          <div class="num">
+                            <i>{{i.num}}</i>
+                          </div>
                         </div>
                       </div>
                     </li>
-                    <li>2</li>
-                    <li>3</li>
                   </ul>
                 </div>
               </el-tab-pane>
               <el-tab-pane label="休闲娱乐"></el-tab-pane>
             </el-tabs>
+            <div class="main-left-foot">
+              <div class="foot-title">
+                <span>美文强推</span>
+              </div>
+              <div class="foot-content">
+                <ul>
+                  <li>1</li>
+                  <li>2</li>
+                  <li>3</li>
+                  <li>4</li>
+                  <li>5</li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div id="main-middle">
-            <div id="middle-"></div>
+            <div id="main-middle-top">
+              <div class="top-carousel">
+                <div class="block">
+                  <el-carousel height="100%">
+                    <el-carousel-item>
+                      <!-- <img src="http://localhost:9010/api/library-core/getImage/111.jpg"> -->
+                    </el-carousel-item>
+                    <el-carousel-item>
+                      <!-- <img src="http://localhost:9010/api/library-core/getImage/222.png"> -->
+                    </el-carousel-item>
+                    <el-carousel-item>
+                      <h3 class="small">3</h3>
+                    </el-carousel-item>
+                    <el-carousel-item>
+                      <h3 class="small">4</h3>
+                    </el-carousel-item>
+                  </el-carousel>
+                </div>
+              </div>
+              <div class="foot-picture"></div>
+            </div>
+            <div id="main-middle-foot"></div>
           </div>
           <div id="main-right">right</div>
         </div>
@@ -97,7 +129,43 @@ export default {
   data() {
     return {
       activeIndex: "1",
-      activeIndex2: "1"
+      activeIndex2: "1",
+      bookTypes: [
+        {
+          id: "1",
+          bookType: [
+            {
+              type: "玄幻",
+              icon: "#icon-xuanhuan",
+              num: "13226",
+              path: ""
+            },
+            {
+              type: "奇幻",
+              icon: "#icon-qihuan",
+              num: "53241",
+              path: ""
+            }
+          ]
+        },
+        {
+          id: "2",
+          bookType: [
+            {
+              type: "武侠",
+              icon: '#icon-wuxia',
+              num: "13226",
+              path: ""
+            },
+            {
+              type: "仙侠",
+              icon: "#icon-xianxia",
+              num: "53211",
+              path: ""
+            }
+          ]
+        }
+      ]
     };
   },
   methods: {
@@ -108,6 +176,9 @@ export default {
       api.qqLogin().then(res => {
         console.log(res);
       });
+    },
+    kk() {
+      this.$message.error("qeqeqeqe");
     }
   }
 };
@@ -151,6 +222,7 @@ body {
   width: 20%;
   height: 100%;
   float: left;
+  margin: 0;
   border: 1px solid red;
 }
 #main-middle {
@@ -181,14 +253,38 @@ body {
   background-color: rgb(243, 237, 237);
 }
 .ul-left {
+  width: 50%;
+  height: 100%;
+  /* border: 1px solid red; */
   float: left;
 }
+.ul-right {
+  width: 50%;
+  height: 100%;
+  /* border: 1px solid red; */
+  float: left;
+}
+/* .ul-left :hover {
+  color: red;
+}
+.ul-right :hover {
+  color: red;
+} */
+.ul-ul li :hover {
+  color: red;
+  cursor: pointer;
+}
 .ul-ul li .li-image {
+  /* margin-top: 10px; */
   width: 45%;
   height: 100%;
   float: left;
-  border: 1px solid red;
-  line-height: 50%;
+  /* border: 1px solid red; */
+  line-height: 50px;
+  text-align: center;
+}
+.ul-ul li .li-image div {
+  height: 100%;
 }
 .ul-ul li .li-image .icon {
   font-size: 25px;
@@ -197,6 +293,59 @@ body {
   float: left;
   width: 49%;
   height: 100%;
+  text-align: left;
+  /* border: 1px solid red; */
+}
+.ul-ul li .li-concent .type {
+  height: 50%;
+}
+.ul-ul li .li-concent .num {
+  height: 50%;
+  line-height: 25px;
+}
+.ul-ul li .li-concent em {
+  font-size: 14px;
+}
+.ul-ul li .li-concent i {
+  font-size: 12px;
+}
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 150px;
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
+}
+
+#main-middle-top {
+  width: 100%;
+  height: 50%;
+}
+#main-middle-top .top-carousel {
+  height: 60%;
+  width: 100%;
+  border: 1px solid red;
+}
+#main-middle-top .top-carousel .block {
+  height: 100%;
+}
+#main-middle-top .top-carousel .block .el-carousel {
+  height: 100%;
+}
+#main-left .main-left-foot {
+  height: 50%;
+  border: 1px solid red;
+}
+#main-middle-foot {
+  height: 50%;
   border: 1px solid red;
 }
 </style>

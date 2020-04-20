@@ -41,6 +41,30 @@
               <router-link to="forget" tag="a">立刻找回</router-link>
             </span>
           </el-form-item>
+          <el-form-item>
+            <div id="other-login">
+              <span>
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-weixin" />
+                </svg>
+              </span>
+              <span>
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-QQ" />
+                </svg>
+              </span>
+              <span>
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-weibo" />
+                </svg>
+              </span>
+              <span>
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-github" />
+                </svg>
+              </span>
+            </div>
+          </el-form-item>
         </el-form>
       </div>
     </div>
@@ -111,23 +135,32 @@ export default {
 
 <style>
 #concent {
-  height: 360px;
+  height: 430px;
   width: 620px;
   text-align: center;
   margin: auto;
+  /* border: 1px solid red; */
 }
 #formput {
-  height: 220px;
+  height: 290px;
   width: 400px;
   text-align: center;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 50px;
   padding: 10px;
   padding-top: 30px;
   padding-right: 105px;
   background-color: lightgrey;
+  /* border: 1px solid red; */
 }
 a :hover {
   color: orange;
 }
+#other-login .icon{
+  font-size: 30px;
+}
+#other-login span{
+  margin-left: 20px;
+}
+
 </style>
