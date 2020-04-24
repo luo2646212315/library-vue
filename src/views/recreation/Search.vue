@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import HeaderFloat from "../components/HeaderFloat";
-import SearchIndex from "../components/SearchIndex";
+import HeaderFloat from "../../components/recreation/HeaderFloat";
+import SearchIndex from "../../components/recreation/SearchIndex";
 export default {
   name: "Search",
   components: {

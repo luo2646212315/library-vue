@@ -1,14 +1,40 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import RecreationHome from '../views/recreation/RecreationHome.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'home',
+    redirect: '/standardHome'
+  },
+  {
+    path: '/recreationHome',
+    name: 'RecreationHome',
+    component: RecreationHome,
+  },
+  {
+    path: '/recreation/search',
+    name: 'recreationSearch',
+    component: () => import("../views/recreation/Search.vue")
+  }, {
+
+    path: '/recreation/bookInfo',
+    name: 'recreationBookInfo',
+    component: () => import("../views/recreation/BookInfo.vue")
+
+  },
+  {
+    path: '/standardHome',
+    name: 'StandardHome',
+    component: () => import('../views/standard/StandardHome'),
+    children: [{
+      path: 'search',
+      name: 'Search',
+      component: () => import('../views/standard/Search'),
+    }]
   },
   {
     path: '/loginRegisterForget',
@@ -49,12 +75,8 @@ const routes = [
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ '../components/Forget.vue')
     }]
-  }, 
-  {
-    path: '/search',
-    name: 'Search',
-    component: () => import("../views/Search.vue")
   }
+
 ]
 
 const router = new VueRouter({

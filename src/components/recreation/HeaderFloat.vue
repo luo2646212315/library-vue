@@ -47,7 +47,7 @@
         <el-menu-item index="/upload">上传小说</el-menu-item>
         <el-menu-item index="/exit">退出</el-menu-item>
       </el-submenu>
-      <div class="loginReg">
+      <div class="loginReg" v-if="!isLogin">
         <span class="login">登录</span> |
         <span class="register">注册</span>
       </div>

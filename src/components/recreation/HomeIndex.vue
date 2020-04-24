@@ -1,240 +1,236 @@
 <template>
   <div id="main">
-      <div id="main-main">
-        <div id="main-left">
-          <el-tabs type="border-card" style="height:50%;padding: 0">
-            <el-tab-pane label="美文名著">
-              <div>
-                <ul class="ul-ul">
-                  <li v-for="item in meiwenbookTypes" :key="item.id">
-                    <div
-                      v-for="(i,index) in item.bookType"
-                      :key="i.type"
-                      @click="kk()"
-                      :class="(index%2)==0?'ul-left':'ul-right'"
-                    >
-                      <div class="li-image">
-                        <div>
-                          <svg class="icon" aria-hidden="true">
-                            <use :xlink:href="i.icon" />
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="li-concent">
-                        <div class="type">
-                          <em>{{i.type}}</em>
-                        </div>
-                        <div class="num">
-                          <i>{{i.num}}</i>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </el-tab-pane>
-            <el-tab-pane label="休闲娱乐"></el-tab-pane>
-          </el-tabs>
-          <div class="main-left-foot">
-            <div class="foot-title">
-              <span>名著强推</span>
-            </div>
-            <div class="foot-concent">
-              <ul class="con-ul">
-                <li>
-                  <div class="book-type">
-                    <span>「</span>
-                    <span class="book-type-zi">玄幻</span>
-                    <span>」</span>
-                  </div>
-                  <div class="book-name">逆天成神</div>
-                  <div class="book-auother">耳根</div>
-                </li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
-                <li>6</li>
-                <li>7</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div id="main-middle">
-          <div id="main-middle-top">
-            <div class="top-carousel">
-              <div class="block">
-                <el-carousel ref="topcar" :interval="3000" height="100%">
-                  <el-carousel-item>
-                    <!-- <img src="http://localhost:9010/api/library-core/getImage/111.jpg"> -->
-                    <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
-                  </el-carousel-item>
-                  <el-carousel-item>
-                    <!-- <img src="http://localhost:9010/api/library-core/getImage/222.png"> -->
-                  </el-carousel-item>
-                  <el-carousel-item>
-                    <h3 class="small">3</h3>
-                  </el-carousel-item>
-                  <el-carousel-item>
-                    <h3 class="small">4</h3>
-                  </el-carousel-item>
-                </el-carousel>
-              </div>
-            </div>
-            <div class="foot-message">
-              <div>
-                <div class="message-concent">
-                  <div class="book-name">
-                    <span>绝世唐门</span>
-                  </div>
-                  <div class="book-zhui">
-                    <span style="font-size: 18px;font-weight: bold;font-style: italic;">5000</span>
-                    <span style="font-size: 12px;">人在追</span>
-                  </div>
-                  <div class="book-desc">
-                    <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="message-concent">
-                  <div class="book-name">
-                    <span>绝世唐门</span>
-                  </div>
-                  <div class="book-zhui">
-                    <span>5000</span>
-                    <span>人在追</span>
-                  </div>
-                  <div class="book-desc">
-                    <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="message-concent">
-                  <div class="book-name">
-                    <span>绝世唐门</span>
-                  </div>
-                  <div class="book-zhui">
-                    <span>5000</span>
-                    <span>人在追</span>
-                  </div>
-                  <div class="book-desc">
-                    <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="main-middle-foot">
-            <div class="foot-title">
-              <span>系统推荐</span>
-            </div>
-            <div class="top-show">
-              <div class="left-carousel">
-                <el-carousel
-                  @change="footCarouselChange()"
-                  ref="footcar"
-                  trigger="click"
-                  :interval="4000"
-                  type="card"
-                  height="125px"
-                >
-                  <el-carousel-item v-for="item in 6" :key="item">
-                    <el-image style="width: 100%; height: 100%" src="images/11.jpg"  :fit='fit'></el-image>
-                  </el-carousel-item>
-                </el-carousel>
-              </div>
-              <div class="right-concent">
-                <div
-                  class="card"
-                  :key="index"
-                  :style="footCarIndex==index ? 'display:block':'display:none'"
-                  v-for="(item,index) in myMiddleFootCarousel"
-                >
-                  <div class="book-name">{{item.bookName}}</div>
-                  <div class="book-desc">
-                    <span>{{item.bookDesc}}---{{footCarIndex}}</span>
-                  </div>
+    <div id="main-main">
+      <div id="main-left">
+        <div class="type">
+          <ul class="ul-ul">
+            <li v-for="item in meiwenbookTypes" :key="item.id">
+              <div
+                v-for="(i,index) in item.bookType"
+                :key="i.type"
+                @click="kk()"
+                :class="(index%2)==0?'ul-left':'ul-right'"
+              >
+                <div class="li-image">
                   <div>
-                    <el-button type="danger" size="small" round>书籍详情</el-button>
+                    <svg class="icon" aria-hidden="true">
+                      <use :xlink:href="i.icon" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="li-concent">
+                  <div class="type">
+                    <em>{{i.type}}</em>
+                  </div>
+                  <div class="num">
+                    <i>{{i.num}}</i>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="middle-foot-foot">
-              <div class="foot-concent">
-                <div class="concent">
-                  <div class="book-name left-name">斗破苍穹</div>
-                  <div class="book-desc">四处找寻那些即将化龙的小幼灵，将它们驯养成当世无双的龙王！</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="main-left-foot">
+          <div class="foot-title">
+            <span>名著强推</span>
+          </div>
+          <div class="foot-concent">
+            <ul class="con-ul">
+              <li>
+                <div class="book-type">
+                  <span>「</span>
+                  <span class="book-type-zi">玄幻</span>
+                  <span>」</span>
                 </div>
-                <div class="book-cover">
+                <div class="book-name">逆天成神</div>
+                <div class="book-auother">耳根</div>
+              </li>
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+              <li>5</li>
+              <li>6</li>
+              <li>7</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="main-middle">
+        <div id="main-middle-top">
+          <div class="top-carousel">
+            <div class="block">
+              <el-carousel ref="topcar" :interval="3000" height="100%">
+                <el-carousel-item>
+                  <!-- <img src="http://localhost:9010/api/library-core/getImage/111.jpg"> -->
                   <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
+                </el-carousel-item>
+                <el-carousel-item>
+                  <!-- <img src="http://localhost:9010/api/library-core/getImage/222.png"> -->
+                </el-carousel-item>
+                <el-carousel-item>
+                  <h3 class="small">3</h3>
+                </el-carousel-item>
+                <el-carousel-item>
+                  <h3 class="small">4</h3>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+          </div>
+          <div class="foot-message">
+            <div>
+              <div class="message-concent">
+                <div class="book-name">
+                  <span>绝世唐门</span>
+                </div>
+                <div class="book-zhui">
+                  <span style="font-size: 18px;font-weight: bold;font-style: italic;">5000</span>
+                  <span style="font-size: 12px;">人在追</span>
+                </div>
+                <div class="book-desc">
+                  <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
                 </div>
               </div>
-              <div class="foot-concent right-concent">
-                <div class="concent">
-                  <div class="book-name right-name">斗破苍穹</div>
-                  <div class="book-desc">四处找寻那些即将化龙的小幼灵，将它们驯养成当世无双的龙王！</div>
+            </div>
+            <div>
+              <div class="message-concent">
+                <div class="book-name">
+                  <span>绝世唐门</span>
                 </div>
-                <div class="book-cover">123</div>
+                <div class="book-zhui">
+                  <span>5000</span>
+                  <span>人在追</span>
+                </div>
+                <div class="book-desc">
+                  <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="message-concent">
+                <div class="book-name">
+                  <span>绝世唐门</span>
+                </div>
+                <div class="book-zhui">
+                  <span>5000</span>
+                  <span>人在追</span>
+                </div>
+                <div class="book-desc">
+                  <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div id="main-right">
-          <div class="main-left-foot">
-            <div class="foot-title" style="margin-top:0">
-              <span>新闻公告</span>
+        <div id="main-middle-foot">
+          <div class="foot-title">
+            <span>系统推荐</span>
+          </div>
+          <div class="top-show">
+            <div class="left-carousel">
+              <el-carousel
+                @change="footCarouselChange()"
+                ref="footcar"
+                trigger="click"
+                :interval="4000"
+                type="card"
+                height="125px"
+              >
+                <el-carousel-item v-for="item in 6" :key="item">
+                  <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
+                </el-carousel-item>
+              </el-carousel>
             </div>
-            <div class="foot-concent">
-              <ul class="con-ul">
-                <li>
-                  <div class="book-type">
-                    <span>「</span>
-                    <span class="book-type-zi">玄幻</span>
-                    <span>」</span>
-                  </div>
-                  <div class="book-name">逆天成神</div>
-                  <div class="book-auother">耳根</div>
-                </li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
-                <li>6</li>
-                <li>7</li>
-                <li>7</li>
-              </ul>
+            <div class="right-concent">
+              <div
+                class="card"
+                :key="index"
+                :style="footCarIndex==index ? 'display:block':'display:none'"
+                v-for="(item,index) in myMiddleFootCarousel"
+              >
+                <div class="book-name">{{item.bookName}}</div>
+                <div class="book-desc">
+                  <span>{{item.bookDesc}}---{{footCarIndex}}</span>
+                </div>
+                <div>
+                  <el-button type="danger" size="small" round>书籍详情</el-button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="main-left-foot">
-            <div class="foot-title">
-              <span>娱乐强推</span>
-            </div>
+          <div class="middle-foot-foot">
             <div class="foot-concent">
-              <ul class="con-ul">
-                <li>
-                  <div class="book-type">
-                    <span>「</span>
-                    <span class="book-type-zi">玄幻</span>
-                    <span>」</span>
-                  </div>
-                  <div class="book-name">逆天成神</div>
-                  <div class="book-auother">耳根</div>
-                </li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
-                <li>6</li>
-                <li>7</li>
-              </ul>
+              <div class="concent">
+                <div class="book-name left-name">斗破苍穹</div>
+                <div class="book-desc">四处找寻那些即将化龙的小幼灵，将它们驯养成当世无双的龙王！</div>
+              </div>
+              <div class="book-cover">
+                <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
+              </div>
+            </div>
+            <div class="foot-concent right-concent">
+              <div class="concent">
+                <div class="book-name right-name">斗破苍穹</div>
+                <div class="book-desc">四处找寻那些即将化龙的小幼灵，将它们驯养成当世无双的龙王！</div>
+              </div>
+              <div class="book-cover">123</div>
             </div>
           </div>
         </div>
       </div>
+      <div id="main-right">
+        <div class="main-left-foot">
+          <div class="foot-title" style="margin-top:0">
+            <span>新闻公告</span>
+          </div>
+          <div class="foot-concent">
+            <ul class="con-ul">
+              <li>
+                <div class="book-type">
+                  <span>「</span>
+                  <span class="book-type-zi">玄幻</span>
+                  <span>」</span>
+                </div>
+                <div class="book-name">逆天成神</div>
+                <div class="book-auother">耳根</div>
+              </li>
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+              <li>5</li>
+              <li>6</li>
+              <li>7</li>
+              <li>7</li>
+            </ul>
+          </div>
+        </div>
+        <div class="main-left-foot">
+          <div class="foot-title">
+            <span>娱乐强推</span>
+          </div>
+          <div class="foot-concent">
+            <ul class="con-ul">
+              <li>
+                <div class="book-type">
+                  <span>「</span>
+                  <span class="book-type-zi">玄幻</span>
+                  <span>」</span>
+                </div>
+                <div class="book-name">逆天成神</div>
+                <div class="book-auother">耳根</div>
+              </li>
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+              <li>5</li>
+              <li>6</li>
+              <li>7</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -246,7 +242,7 @@ export default {
   data() {
     return {
       // activeIndex: "1",
-      fit:'fill',
+      fit: "fill",
       activeIndex2: "1",
       footCarIndex: "0",
       meiwenbookTypes: [
@@ -689,5 +685,8 @@ body {
 }
 .left-name {
   color: #0060bf;
+}
+#main-left .type{
+height: 50%;
 }
 </style>

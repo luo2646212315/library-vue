@@ -1,5 +1,5 @@
 <template>
-  <div class="home">   
+  <div class="recreationHome">   
     <HeaderCommon></HeaderCommon>
     <HomeIndex></HomeIndex>
     <Footer></Footer>
@@ -7,12 +7,13 @@
 </template>
 
 <script>
-import HomeIndex from "../components/HomeIndex";
-import HeaderCommon from "../components/HeaderCommon"
-import Footer from "../components/Footer"
+import HomeIndex from "../../components/recreation/HomeIndex";
+import HeaderCommon from "../../components/recreation/HeaderCommon"
+import Footer from "../../components/Footer"
+
 // import api from "../api";
 export default {
-  name: "Home",
+  name: "RecreationHome",
   components: {
     HomeIndex,
     HeaderCommon,
