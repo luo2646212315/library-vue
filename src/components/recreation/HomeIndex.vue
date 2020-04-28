@@ -3,32 +3,31 @@
     <div id="main-main">
       <div id="main-left">
         <div class="type">
-          <ul class="ul-ul">
-            <li v-for="item in meiwenbookTypes" :key="item.id">
-              <div
-                v-for="(i,index) in item.bookType"
-                :key="i.type"
-                @click="kk()"
-                :class="(index%2)==0?'ul-left':'ul-right'"
-              >
-                <div class="li-image">
-                  <div>
-                    <svg class="icon" aria-hidden="true">
-                      <use :xlink:href="i.icon" />
-                    </svg>
-                  </div>
-                </div>
-                <div class="li-concent">
-                  <div class="type">
-                    <em>{{i.type}}</em>
-                  </div>
-                  <div class="num">
-                    <i>{{i.num}}</i>
-                  </div>
+          <div class="ul-ul">
+            <div
+              @click="kk(bookType.typeUrl)"
+              class="ul-item"
+              :class="index%4==0||index%4==1 ? 'choose' : ''"
+              v-for="(bookType,index) in bookTypes"
+              :key="bookType.id"
+            >
+              <div class="li-image">
+                <div>
+                  <svg class="icon" aria-hidden="true">
+                    <use :xlink:href="bookType.typeIcon" />
+                  </svg>
                 </div>
               </div>
-            </li>
-          </ul>
+              <div class="li-concent">
+                <div class="type">
+                  <em>{{bookType.typeName}}</em>
+                </div>
+                <div class="num">
+                  <i>{{bookType.bookNum}}</i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="main-left-foot">
@@ -234,69 +233,39 @@
 </template>
 
 <script>
-// import api from "../api";
+import api from "../../api/index";
 export default {
   name: "HomeIndex",
   components: {},
-  created() {},
+  created() {
+    this.getBookType("02");
+  },
   data() {
     return {
       // activeIndex: "1",
       fit: "fill",
       activeIndex2: "1",
       footCarIndex: "0",
-      meiwenbookTypes: [
+      bookTypes: [
         {
-          id: "1",
-          bookType: [
-            {
-              type: "玄幻",
-              icon: "#icon-xuanhuan",
-              num: "13226",
-              path: ""
-            },
-            {
-              type: "奇幻",
-              icon: "#icon-qihuan",
-              num: "53241",
-              path: ""
-            }
-          ]
+          typeFlag: "21",
+          icotypeIconn: "#icon-xuanhuan",
+          typeId: "4",
+          typeLevel: "",
+          typeName: "玄幻",
+          typeParentFlag: "",
+          typeUrl: "",
+          bookNum: 1212
         },
         {
-          id: "2",
-          bookType: [
-            {
-              type: "武侠",
-              icon: "#icon-wuxia",
-              num: "543",
-              path: ""
-            },
-            {
-              type: "仙侠",
-              icon: "#icon-xianxia",
-              num: "451",
-              path: ""
-            }
-          ]
-        },
-
-        {
-          id: "3",
-          bookType: [
-            {
-              type: "都市",
-              icon: "#icon-dushi",
-              num: "1326",
-              path: ""
-            },
-            {
-              type: "现实",
-              icon: "#icon-xianshi",
-              num: "45211",
-              path: ""
-            }
-          ]
+          typeFlag: "22",
+          icotypeIconn: "#icon-qihuan",
+          typeId: "5",
+          typeLevel: "",
+          typeName: "奇幻",
+          typeParentFlag: "",
+          typeUrl: "",
+          bookNum: 12454
         }
       ],
       myMiddleTopCarousel: [
@@ -362,6 +331,13 @@ export default {
     },
     kk() {
       this.$message.error("qeqeqeqe");
+    },
+    getBookType(bigType) {
+      var _this = this;
+      api.getBookType(bigType).then(res => {
+        console.log(res);
+        _this.bookTypes = res.data[0]; 
+      });
     }
   },
   watch: {}
@@ -430,41 +406,31 @@ body {
   padding: 0;
   margin: 0px;
 }
-.ul-ul li {
-  list-style: none;
-  width: 100%;
+.ul-ul .ul-item {
+  width: 50%;
   height: 50px;
+  float: left;
 }
-.ul-ul li:nth-child(odd) {
+.choose {
   /* background-color: rgb(218, 214, 214); */
   background-color: #f7f6f2;
 }
 /* .ul-ul li:nth-child(even) {
   background-color: rgb(243, 237, 237);
 } */
-.ul-left {
-  width: 50%;
-  height: 100%;
-  /* border: 1px solid red; */
-  float: left;
-}
-.ul-right {
-  width: 50%;
-  height: 100%;
-  /* border: 1px solid red; */
-  float: left;
-}
-/* .ul-left :hover {
-  color: red;
-}
-.ul-right :hover {
-  color: red;
-} */
-.ul-ul li :hover {
+
+.ul-ul :hover {
   color: red;
   cursor: pointer;
 }
-.ul-ul li .li-image {
+/* 图片移动 */
+/* .ul-ul :hover svg {
+  transform: translateX(-5px);
+}
+svg {
+  transition: margin ease-out 0.5s;
+} */
+.ul-ul .ul-item .li-image {
   /* margin-top: 10px; */
   width: 45%;
   height: 100%;
@@ -473,31 +439,33 @@ body {
   line-height: 50px;
   text-align: center;
 }
-.ul-ul li .li-image div {
+.ul-ul .ul-item .li-image div {
   height: 100%;
 }
-.ul-ul li .li-image .icon {
+.ul-ul .ul-item .li-image .icon {
   font-size: 25px;
 }
-.ul-ul li .li-concent {
+
+
+.ul-ul .ul-item .li-concent {
   float: left;
   width: 49%;
   height: 100%;
   text-align: left;
   /* border: 1px solid red; */
 }
-.ul-ul li .li-concent .type {
+.ul-ul .ul-item .li-concent .type {
   height: 20px;
   margin-top: 5px;
 }
-.ul-ul li .li-concent .num {
+.ul-ul .ul-item .li-concent .num {
   height: 16px;
   line-height: 16px;
 }
-.ul-ul li .li-concent em {
+.ul-ul .ul-item .li-concent em {
   font-size: 14px;
 }
-.ul-ul li .li-concent i {
+.ul-ul .ul-item .li-concent i {
   font-size: 12px;
 }
 .el-carousel__item h3 {
@@ -686,7 +654,7 @@ body {
 .left-name {
   color: #0060bf;
 }
-#main-left .type{
-height: 50%;
+#main-left .type {
+  height: 50%;
 }
 </style>

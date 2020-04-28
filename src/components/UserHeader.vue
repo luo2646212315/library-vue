@@ -9,16 +9,24 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-      <el-submenu index="/home">
-        <template slot="title">
-          <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
-        </template>
-        <el-menu-item index="/standardHome">文学专区</el-menu-item>
-        <el-menu-item index="/recreationHome">娱乐专区</el-menu-item>
+      <el-menu-item index="/home">首页</el-menu-item>
+      <el-submenu index="/admain" v-show="isAdmain">
+        <template slot="title">管理员</template>
+        <el-menu-item index="/userManager">用户管理</el-menu-item>
+        <el-menu-item index="/bookManager">书籍管理</el-menu-item>
+        <el-submenu index="2-3">
+          <template slot="title">选项4</template>
+          <el-menu-item index="2-3-1">选项1</el-menu-item>
+          <el-menu-item index="2-4-2">选项2</el-menu-item>
+          <el-menu-item index="2-4-3">选项3</el-menu-item>
+        </el-submenu>
       </el-submenu>
 
-      <el-menu-item index="/recreationHome">首页</el-menu-item>
-
+      <el-submenu index="/meiwen">
+        <template slot="title">美文名著</template>
+        <el-menu-item index="/lishi">历史</el-menu-item>
+        <el-menu-item index="/qingxiaoshuo">轻小说</el-menu-item>
+      </el-submenu>
       <el-submenu index="/yule">
         <template slot="title">休闲娱乐</template>
         <el-menu-item index="/xuanhuan">玄幻</el-menu-item>
@@ -40,29 +48,14 @@
         <el-menu-item index="/exit">退出</el-menu-item>
       </el-submenu>
       <div class="loginReg" v-if="!isLogin">
-        <span class="login">
-          <router-link to="/loginRegisterForget/login" tag="span">登录</router-link>
-        </span> |
-        <span class="register">
-          <router-link to="/loginRegisterForget/register" tag="span">注册</router-link>
-        </span>
+        <span class="login">登录</span> |
+        <span class="register">注册</span>
       </div>
-      <el-submenu style="float:right" index="/admain" v-show="isAdmain">
-        <template slot="title">管理员</template>
-        <el-menu-item index="/userManager">用户管理</el-menu-item>
-        <el-menu-item index="/bookManager">书籍管理</el-menu-item>
-        <el-submenu index="2-3">
-          <template slot="title">选项4</template>
-          <el-menu-item index="2-3-1">选项1</el-menu-item>
-          <el-menu-item index="2-4-2">选项2</el-menu-item>
-          <el-menu-item index="2-4-3">选项3</el-menu-item>
-        </el-submenu>
-      </el-submenu>
-      <div style="float:right; margin-top: 10px;" index="/search">
+      <el-menu-item style="float:right" index="/search">
         <el-input placeholder="请输入作者、小说名" v-model="input" class="input-with-select">
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
-      </div>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -72,24 +65,15 @@ export default {
   name: "HeaderFloat",
   data() {
     return {
-      fit: "fill",
-      src: require("../../assets/images/logo.png"),
       activeIndex: "1",
-      isLogin: true,
-      isAdmain: false,
+      isLogin: false,
+      isAdmain: true,
       input: ""
     };
   },
   methods: {
-    handleSelect(key) {
-      if (key == "/exit") {
-        console.log(key);
-        this.isLogin = false;
-        return;
-      }
-      this.$router.push({
-        path: key
-      });
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath);
     }
   }
 };

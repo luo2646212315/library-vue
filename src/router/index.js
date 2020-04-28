@@ -8,7 +8,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    redirect: '/standardHome'
+    redirect: '/standardHome/wenxue'
   },
   {
     path: '/recreationHome',
@@ -27,14 +27,14 @@ const routes = [
 
   },
   {
-    path: '/standardHome',
+    path: '/standardHome/:type',
     name: 'StandardHome',
-    component: () => import('../views/standard/StandardHome'),
-    children: [{
-      path: 'search',
-      name: 'Search',
-      component: () => import('../views/standard/Search'),
-    }]
+    component: () => import('../views/standard/StandardHome')
+  },
+  {
+    path: '/standard/bookInfo',
+    name: 'BookInfo',
+    component: () => import('../views/standard/BookInfo')
   },
   {
     path: '/loginRegisterForget',
@@ -75,6 +75,21 @@ const routes = [
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ '../components/Forget.vue')
     }]
+  },
+  {
+    path: '/userInfo',
+    name: 'UserInfo',
+    component: () => import('../views/UserInfo')
+  },
+  {
+    path: '/bookshelf',
+    name: 'Bookshelf',
+    component: () => import('../views/Bookshelf')
+  },
+  {
+    path: '/middlePage',
+    name: 'MiddlePage',
+    component: () => import('../views/MiddlePage')
   }
 
 ]

@@ -14,13 +14,13 @@
           <template slot="title">
             <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
           </template>
-          <el-menu-item index="/userManager">文学专区</el-menu-item>
-          <el-menu-item index="/bookManager">娱乐专区</el-menu-item>
+          <el-menu-item index="/standardHome/wenxue">文学专区</el-menu-item>
+          <el-menu-item index="/recreationHome">娱乐专区</el-menu-item>
         </el-submenu>
 
-        <el-menu-item index="/standardHome">首页</el-menu-item>
-        <el-menu-item index="/wanben">文学</el-menu-item>
-        <el-menu-item index="/paihang">经济</el-menu-item>
+        <el-menu-item index="/standardHome/wenxue">首页</el-menu-item>
+        <el-menu-item index="/standardHome/wenxue">文学</el-menu-item>
+        <el-menu-item index="/standardHome/jingji">经济</el-menu-item>
         <el-menu-item index="/paihang">历史、地理</el-menu-item>
         <el-menu-item index="/paihang">政治、法律</el-menu-item>
         <el-submenu index="/more">
@@ -91,8 +91,21 @@ export default {
     s() {
       console.log(this.selectType);
     },
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect(key) {
+      var nowUrl = this.$route.path;
+
+      if (nowUrl === key) {
+        location.reload();
+        return;
+      }
+      if (key === "/exit") {
+        console.log(key);
+        this.isLogin = false;
+        return;
+      }
+      this.$router.push({
+        path: key
+      });
     }
   }
 };

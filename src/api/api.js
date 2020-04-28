@@ -41,3 +41,7 @@ export const updateUser = params =>{
 export const deleteUser = userId =>{
     return axios.delete(base.baseUrl+"/userInfo/deleteUser",{userId:userId})
 }
+//获取书籍类别
+export const getBookType = bigType =>{
+    return axios.get(base.baseUrl+"/book/auth/getBookType",{bigType:bigType})
+}

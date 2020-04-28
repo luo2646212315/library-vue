@@ -6,200 +6,67 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "5158717",
-      "name": "C-社会",
-      "font_class": "C-shehui",
-      "unicode": "e61f",
-      "unicode_decimal": 58911
-    },
-    {
-      "icon_id": "5158718",
-      "name": "A-思想",
-      "font_class": "A-sixiang",
-      "unicode": "e620",
-      "unicode_decimal": 58912
-    },
-    {
-      "icon_id": "5158719",
-      "name": "音乐",
-      "font_class": "yinle",
-      "unicode": "e621",
-      "unicode_decimal": 58913
-    },
-    {
-      "icon_id": "5158720",
-      "name": "I-文学",
-      "font_class": "I-wenxue",
-      "unicode": "e622",
-      "unicode_decimal": 58914
-    },
-    {
-      "icon_id": "5158721",
-      "name": "G-文化",
-      "font_class": "G-wenhua",
-      "unicode": "e623",
-      "unicode_decimal": 58915
-    },
-    {
-      "icon_id": "5158722",
-      "name": "H-语言",
-      "font_class": "H-yuyan",
-      "unicode": "e624",
-      "unicode_decimal": 58916
-    },
-    {
-      "icon_id": "5158723",
-      "name": "J-艺术",
-      "font_class": "J-yishu",
-      "unicode": "e625",
-      "unicode_decimal": 58917
-    },
-    {
-      "icon_id": "5158724",
-      "name": "O-数学",
-      "font_class": "O-shuxue",
-      "unicode": "e626",
-      "unicode_decimal": 58918
-    },
-    {
-      "icon_id": "5158725",
-      "name": "K-地理",
-      "font_class": "K-dili",
-      "unicode": "e627",
-      "unicode_decimal": 58919
-    },
-    {
-      "icon_id": "5158726",
-      "name": "P-天文学",
-      "font_class": "P-tianwenxue",
-      "unicode": "e628",
-      "unicode_decimal": 58920
-    },
-    {
-      "icon_id": "5158727",
-      "name": "R-医学",
-      "font_class": "R-yixue",
-      "unicode": "e62a",
-      "unicode_decimal": 58922
-    },
-    {
-      "icon_id": "5158728",
-      "name": "N-自然",
-      "font_class": "N-ziran",
-      "unicode": "e62b",
-      "unicode_decimal": 58923
-    },
-    {
-      "icon_id": "5158729",
-      "name": "Q-生物",
-      "font_class": "Q-shengwu",
-      "unicode": "e62c",
-      "unicode_decimal": 58924
-    },
-    {
-      "icon_id": "5158730",
-      "name": "S-农业",
-      "font_class": "S-nongye",
-      "unicode": "e62d",
-      "unicode_decimal": 58925
-    },
-    {
-      "icon_id": "5158731",
-      "name": "V-航空",
-      "font_class": "V-hangkong",
-      "unicode": "e62f",
-      "unicode_decimal": 58927
-    },
-    {
-      "icon_id": "5158732",
-      "name": "T-工业",
-      "font_class": "T-gongye",
-      "unicode": "e630",
-      "unicode_decimal": 58928
-    },
-    {
-      "icon_id": "5158733",
-      "name": "U-运输",
-      "font_class": "U-yunshu",
-      "unicode": "e631",
-      "unicode_decimal": 58929
-    },
-    {
-      "icon_id": "5158734",
-      "name": "X-环境",
-      "font_class": "X-huanjing",
-      "unicode": "e632",
-      "unicode_decimal": 58930
-    },
-    {
-      "icon_id": "5158735",
-      "name": "Z-综合性",
-      "font_class": "Z-zonghexing",
-      "unicode": "e634",
-      "unicode_decimal": 58932
-    },
-    {
-      "icon_id": "5159067",
-      "name": "F-经济",
-      "font_class": "F-jingji",
-      "unicode": "e635",
-      "unicode_decimal": 58933
-    },
-    {
-      "icon_id": "5162801",
-      "name": "生活",
-      "font_class": "shenghuo1",
-      "unicode": "e636",
-      "unicode_decimal": 58934
-    },
-    {
-      "icon_id": "5162819",
-      "name": "O-数学",
-      "font_class": "O-shuxue1",
-      "unicode": "e637",
-      "unicode_decimal": 58935
-    },
-    {
-      "icon_id": "5162828",
-      "name": "V-航空",
-      "font_class": "V-hangkong1",
-      "unicode": "e638",
-      "unicode_decimal": 58936
-    },
-    {
-      "icon_id": "5158705",
-      "name": "计算机",
-      "font_class": "jisuanji",
-      "unicode": "e617",
-      "unicode_decimal": 58903
-    },
-    {
-      "icon_id": "5158708",
-      "name": "美食",
-      "font_class": "meishi",
+      "icon_id": "1032795",
+      "name": "小说",
+      "font_class": "xiaoshuo",
       "unicode": "e619",
       "unicode_decimal": 58905
     },
     {
-      "icon_id": "5158712",
-      "name": "生活",
-      "font_class": "shenghuo",
-      "unicode": "e61a",
-      "unicode_decimal": 58906
+      "icon_id": "1047235",
+      "name": "戏剧作品",
+      "font_class": "xijuzuopin",
+      "unicode": "e7b6",
+      "unicode_decimal": 59318
     },
     {
-      "icon_id": "5158713",
-      "name": "B-哲学宗教",
-      "font_class": "B-zhexuezongjiao",
-      "unicode": "e61c",
-      "unicode_decimal": 58908
+      "icon_id": "2021810",
+      "name": "诗歌",
+      "font_class": "sgdq",
+      "unicode": "e634",
+      "unicode_decimal": 58932
     },
     {
-      "icon_id": "5158714",
-      "name": "D-政治法律",
-      "font_class": "D-zhengzhifalv",
-      "unicode": "e61d",
-      "unicode_decimal": 58909
+      "icon_id": "8813336",
+      "name": "散文",
+      "font_class": "yuegao",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "10683502",
+      "name": "人物",
+      "font_class": "ziyuan1",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "13773646",
+      "name": "社会科学",
+      "font_class": "shehuikexue",
+      "unicode": "e7e5",
+      "unicode_decimal": 59365
+    },
+    {
+      "icon_id": "5207402",
+      "name": "有声读物",
+      "font_class": "ziyuan",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "7606028",
+      "name": "体育",
+      "font_class": "tiyu",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "9001278",
+      "name": "帮 助",
+      "font_class": "bangzhu666",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
     },
     {
       "icon_id": "7176825",
@@ -340,20 +207,6 @@
       "font_class": "ziran",
       "unicode": "e60e",
       "unicode_decimal": 58894
-    },
-    {
-      "icon_id": "5158707",
-      "name": "历史",
-      "font_class": "lishi1",
-      "unicode": "e612",
-      "unicode_decimal": 58898
-    },
-    {
-      "icon_id": "5158715",
-      "name": "E-军事",
-      "font_class": "E-junshi",
-      "unicode": "e616",
-      "unicode_decimal": 58902
     },
     {
       "icon_id": "5947627",
