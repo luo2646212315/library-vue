@@ -10,7 +10,7 @@
         text-color="#fff"
         active-text-color="#ffd04b"
       >
-        <el-submenu index="/home" v-show="isAdmain">
+        <el-submenu index="/home">
           <template slot="title">
             <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
           </template>
@@ -29,33 +29,33 @@
           <el-menu-item index="/yuanlin">园林</el-menu-item>
         </el-submenu>
 
-        <el-menu-item style="float:right" index="/bookshelf">
+        <el-menu-item style="float:right" index="/user/bookshelf">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-shujia" />
           </svg>我的书架
         </el-menu-item>
 
         <el-submenu style="float:right" index="/user" v-if="isLogin">
-          <template slot="title">雪月风殇</template>
-          <el-menu-item index="/message">消息</el-menu-item>
-          <el-menu-item index="/userInfo">个人中心</el-menu-item>
-          <el-menu-item index="/upload">上传小说</el-menu-item>
+          <template slot="title">
+            <i class="el-icon-s-custom"></i>雪月风殇
+          </template>
+          <el-menu-item index="/user/message">消息</el-menu-item>
+          <el-menu-item index="/user/userInfo">个人中心</el-menu-item>
+          <el-menu-item index="/user/upload">书籍上传</el-menu-item>
           <el-menu-item index="/exit">退出</el-menu-item>
         </el-submenu>
         <div class="loginReg" v-if="!isLogin">
-          <span class="login">登录</span> |
-          <span class="register">注册</span>
+          <span class="login">
+            <router-link to="/loginRegisterForget/login" tag="span">登录</router-link>
+          </span> |
+          <span class="register">
+            <router-link to="/loginRegisterForget/register" tag="span">注册</router-link>
+          </span>
         </div>
         <el-submenu style="float:right" index="/admain" v-show="isAdmain">
           <template slot="title">管理员</template>
           <el-menu-item index="/userManager">用户管理</el-menu-item>
           <el-menu-item index="/bookManager">书籍管理</el-menu-item>
-          <el-submenu index="2-3">
-            <template slot="title">选项4</template>
-            <el-menu-item index="2-3-1">选项1</el-menu-item>
-            <el-menu-item index="2-4-2">选项2</el-menu-item>
-            <el-menu-item index="2-4-3">选项3</el-menu-item>
-          </el-submenu>
         </el-submenu>
       </el-menu>
     </div>

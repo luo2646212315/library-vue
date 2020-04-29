@@ -43,8 +43,8 @@
                 </div>
               </div>
               <div class="buttom-button">
-                <el-button style="float:left" size="medium" type="danger">危险按钮</el-button>
-                <el-button style="float:right" size="medium" type="primary" plain>主要按钮</el-button>
+                <el-button style="float:left" size="medium" type="danger">加入书架</el-button>
+                <el-button style="float:right" size="medium" type="primary" plain>书籍详情</el-button>
               </div>
             </div>
           </div>

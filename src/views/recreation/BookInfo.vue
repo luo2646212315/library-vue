@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!-- <HeaderFloat></HeaderFloat> -->
+    <HeaderFloat></HeaderFloat>
     <BookDesc></BookDesc>
   </div>
 </template>
 
 <script>
-// import HeaderFloat from "../components/HeaderFloat";
+import HeaderFloat from "../../components/recreation/HeaderFloat";
 import BookDesc from "../../components/recreation/BookDesc";
 export default {
   name: "BookInfo",
@@ -14,7 +14,7 @@ export default {
     msg: String
   },
   components: {
-    // HeaderFloat,
+    HeaderFloat,
     BookDesc
   },
   data() {

@@ -19,24 +19,30 @@
 
       <el-menu-item index="/recreationHome">首页</el-menu-item>
 
-      <el-submenu index="/yule">
-        <template slot="title">休闲娱乐</template>
+      <el-menu-item index="/wanben">完本</el-menu-item>
+      <el-menu-item index="/paihang">排行</el-menu-item>
+      <el-submenu index="/all">
+        <template slot="title">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-mulu" />
+          </svg>全部作品
+        </template>
         <el-menu-item index="/xuanhuan">玄幻</el-menu-item>
         <el-menu-item index="/xiuzhen">修真</el-menu-item>
       </el-submenu>
-      <el-menu-item index="/wanben">完本</el-menu-item>
-      <el-menu-item index="/paihang">排行</el-menu-item>
 
-      <el-menu-item style="float:right" index="/bookshelf">
+      <el-menu-item style="float:right" index="/user/bookshelf">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-shujia" />
         </svg>我的书架
       </el-menu-item>
       <el-submenu style="float:right" index="/user" v-if="isLogin">
-        <template slot="title">雪月风殇</template>
-        <el-menu-item index="/message">消息</el-menu-item>
-        <el-menu-item index="/userInfo">个人中心</el-menu-item>
-        <el-menu-item index="/upload">上传小说</el-menu-item>
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>雪月风殇
+        </template>
+        <el-menu-item index="/user/message">消息</el-menu-item>
+        <el-menu-item index="/user/userInfo">个人中心</el-menu-item>
+        <el-menu-item index="/user/upload">上传小说</el-menu-item>
         <el-menu-item index="/exit">退出</el-menu-item>
       </el-submenu>
       <div class="loginReg" v-if="!isLogin">
@@ -51,14 +57,8 @@
         <template slot="title">管理员</template>
         <el-menu-item index="/userManager">用户管理</el-menu-item>
         <el-menu-item index="/bookManager">书籍管理</el-menu-item>
-        <el-submenu index="2-3">
-          <template slot="title">选项4</template>
-          <el-menu-item index="2-3-1">选项1</el-menu-item>
-          <el-menu-item index="2-4-2">选项2</el-menu-item>
-          <el-menu-item index="2-4-3">选项3</el-menu-item>
-        </el-submenu>
       </el-submenu>
-      <div style="float:right; margin-top: 10px;" index="/search">
+      <div style="float:right; margin-top: 10px;margin-right: 20px;" index="/search">
         <el-input placeholder="请输入作者、小说名" v-model="input" class="input-with-select">
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
@@ -75,7 +75,7 @@ export default {
       fit: "fill",
       src: require("../../assets/images/logo.png"),
       activeIndex: "1",
-      isLogin: true,
+      isLogin: false,
       isAdmain: false,
       input: ""
     };
@@ -97,6 +97,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.icon {
+  font-size: 18px;
+}
 #header {
   background-color: rgb(84, 92, 100);
   text-align: center;

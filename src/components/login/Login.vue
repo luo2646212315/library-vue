@@ -72,8 +72,8 @@
 </template>
 
 <script>
-import api from "../api/index";
-import router from "../router";
+import api from "../../api/index";
+import router from "../../router";
 export default {
   data() {
     return {

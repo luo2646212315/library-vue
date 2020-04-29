@@ -15,51 +15,19 @@
           <div class="book-name">马克思恩格斯社会建设理论及其对建设社adad会主义和谐社会的指导</div>
           <div class="book-other">
             <div class="item">
-              <div class="left-item">拼音:</div>
-              <div class="right-item">makeshi</div>
-            </div>
-            <div class="item">
-              <div class="left-item">其他题名:</div>
-              <div class="right-item"></div>
-            </div>
-            <div class="item">
-              <div class="left-item">并列题名:</div>
-              <div class="right-item"></div>
-            </div>
-            <div class="item">
-              <div class="left-item">ISBN:</div>
-              <div class="right-item">978-7-5306-4623-6</div>
+              <div class="left-item">所属:</div>
+              <div class="right-item">中国</div>
             </div>
             <div class="item">
               <div class="left-item">作者:</div>
-              <div class="right-item">fafsafa</div>
+              <div class="right-item">马云</div>
             </div>
             <div class="item">
-              <div class="left-item">出版社:</div>
-              <div class="right-item">百花文艺出版社</div>
+              <div class="left-item">关键词:</div>
+              <div class="right-item">长篇小说，戏剧</div>
             </div>
             <div class="item">
-              <div class="left-item">出版地:</div>
-              <div class="right-item">天津</div>
-            </div>
-            <div class="item">
-              <div class="left-item">出版时间:</div>
-              <div class="right-item">2007</div>
-            </div>
-            <div class="item">
-              <div class="left-item">中图分类号:</div>
-              <div class="right-item">I247.57</div>
-            </div>
-            <div class="item">
-              <div class="left-item">主题词:</div>
-              <div class="right-item">长篇小说</div>
-            </div>
-            <div class="item">
-              <div class="left-item">附注:</div>
-              <div class="right-item"></div>
-            </div>
-            <div class="item">
-              <div class="left-item">摘要:</div>
+              <div class="left-item">介绍:</div>
               <div
                 class="right-item"
               >本书共7篇，内容包括心态篇—全面备战从此开始、生活篇—饮食起居要有规律、策略篇—高效的复习策略、方法篇—高效的复习方法、应试篇—全身而过的不败经典、休整篇—好好休息迎接未来。</div>
@@ -249,6 +217,7 @@ export default {
   height: 300px;
   width: 220px;
   margin-right: 50px;
+  margin-top: 60px;
   float: left;
   /* border: 1px solid red; */
 }
@@ -264,18 +233,19 @@ export default {
   font-weight: bold;
 }
 .right-desc .book-other {
-  height: 390px;
+  padding-top: 20px;
+  height: 370px;
   background-color: #fff;
 }
 .item {
-  min-height: 28px;
-  line-height: 28px;
+  min-height: 38px;
+  line-height: 38px;
 }
 .left-item {
   text-align: right;
-  width: 220px;
-  min-height: 28px;
-  line-height: 28px;
+  width: 180px;
+  min-height: 38px;
+  line-height: 38px;
   float: left;
   font-size: small;
   color: #099 !important;
@@ -283,8 +253,8 @@ export default {
 .right-item {
   width: 380px;
   text-align: left;
-  min-height: 28px;
-  line-height: 28px;
+  min-height: 38px;
+  line-height: 38px;
   margin-left: 20px;
   font-family: 宋体;
   font-size: small;

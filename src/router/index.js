@@ -57,7 +57,7 @@ const routes = [
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ '../components/Login.vue')
+      component: () => import(/* webpackChunkName: "about" */ '../components/login/Login.vue')
     },
     {
       path: 'register',
@@ -65,7 +65,7 @@ const routes = [
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ '../components/Register.vue')
+      component: () => import(/* webpackChunkName: "about" */ '../components/login/Register.vue')
     },
     {
       path: 'forget',
@@ -73,18 +73,13 @@ const routes = [
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ '../components/Forget.vue')
+      component: () => import(/* webpackChunkName: "about" */ '../components/login/Forget.vue')
     }]
   },
   {
-    path: '/userInfo',
-    name: 'UserInfo',
-    component: () => import('../views/UserInfo')
-  },
-  {
-    path: '/bookshelf',
-    name: 'Bookshelf',
-    component: () => import('../views/Bookshelf')
+    path: '/user/:type',
+    name: 'User',
+    component: () => import('../views/User')
   },
   {
     path: '/middlePage',

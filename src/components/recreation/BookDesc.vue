@@ -1,6 +1,14 @@
 <template>
   <div id="bookDesc">
-    <div class="top-image"></div>
+    <div class="top-image">
+      <div class="crumbs">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>玄幻</el-breadcrumb-item>
+          <el-breadcrumb-item>斗罗大陆</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+    </div>
     <div class="middle">
       <div class="top-book">
         <div class="book-cover">
@@ -47,9 +55,7 @@
       <div class="buttom-concent">
         <el-tabs value="first">
           <el-tab-pane label="作品信息" name="first">
-            <div class="first">
-
-            </div>
+            <div class="first"></div>
           </el-tab-pane>
           <el-tab-pane label="目录(1202章)" name="second">
             <div></div>
@@ -116,6 +122,19 @@ export default {
   width: 100%;
   border: gold 1px solid;
 }
+#bookDesc .top-image .crumbs {
+  height: 33px;
+  padding-top: 20px;
+  margin-top: 21px;
+  width: 1000px;
+  margin: auto;
+  border: 1px solid red;
+}
+.el-breadcrumb {
+  height: 20px;
+  line-height: 20px;
+}
+
 #bookDesc .middle .top-book {
   width: 960px;
   height: 200px;
@@ -214,9 +233,9 @@ img:hover {
 .el-tabs__header {
   margin: 0 0 40px;
 }
-.first{
-    width: 100%;
-    height: 100%;
-    border: 1px solid olivedrab;
+.first {
+  width: 100%;
+  height: 100%;
+  border: 1px solid olivedrab;
 }
 </style>

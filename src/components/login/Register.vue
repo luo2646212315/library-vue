@@ -108,8 +108,8 @@
 </template>
 
 <script>
-import Silder from "../components/Silder.vue";
-import api from "../api/index";
+import Silder from "../login/Silder";
+import api from "../../api/index";
 export default {
   data() {
     //检查邮箱是否被注册
