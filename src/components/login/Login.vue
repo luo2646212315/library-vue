@@ -111,6 +111,7 @@ export default {
                   type: "success"
                 });
                 //添加localstorge
+                localStorage.setItem("user",JSON.stringify(res.data[0]))
                 localStorage.setItem("library-token", res.data[1]);
                 router.push({
                   path: "/"

@@ -5,9 +5,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 import './assets/iconfont/iconfont'
 import * as customerFilter from './filter/index'
+import methods from './golbal/golbal'
 Vue.use(ElementUI)//全局使用ElementUI
 Vue.config.productionTip = false
-
+Vue.use(methods)//引入全局方法
 new Vue({
   router,
   render: h => h(App)

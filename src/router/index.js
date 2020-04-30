@@ -19,11 +19,19 @@ const routes = [
     path: '/recreation/search',
     name: 'recreationSearch',
     component: () => import("../views/recreation/Search.vue")
-  }, {
+  }, 
+  {
 
     path: '/recreation/bookInfo',
     name: 'recreationBookInfo',
     component: () => import("../views/recreation/BookInfo.vue")
+
+  },
+  {
+
+    path: '/recreation/read',
+    name: 'recreationRead',
+    component: () => import("../views/recreation/RecreationRead")
 
   },
   {

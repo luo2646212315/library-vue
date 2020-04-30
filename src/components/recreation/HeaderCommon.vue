@@ -16,7 +16,7 @@
             <el-dropdown @command="handleCommand">
               <span class="el-dropdown-link white">
                 <i class="el-icon-s-custom"></i>
-                <span>雪月风殇</span>
+                <span>{{$userInfo.userNickName}}</span>
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
@@ -47,8 +47,8 @@
                 <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a">美文名著</el-dropdown-item>
-                <el-dropdown-item command="b">休闲娱乐</el-dropdown-item>
+                <el-dropdown-item command="/standardHome/wenxue">美文名著</el-dropdown-item>
+                <el-dropdown-item command="/recreationHome">休闲娱乐</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -106,9 +106,7 @@ export default {
       console.log(this.selectType);
     },
     handleCommand(command) {
-      this.$message("click on item " + command);
       var nowUrl = this.$route.path;
-
       if (nowUrl === command) {
         location.reload();
         return;

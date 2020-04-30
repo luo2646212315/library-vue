@@ -46,11 +46,11 @@
           </el-menu-item>
           <el-submenu style="float:right" index="/user">
             <template slot="title">
-              <i class="el-icon-s-custom"></i>雪月风殇
+              <i class="el-icon-s-custom"></i> {{$userInfo.userNickName}}
             </template>
             <el-menu-item index="/exit">退出</el-menu-item>
           </el-submenu>
-          <el-submenu index="/admain" style="float:right" v-show="isAdmain">
+          <el-submenu index="/admain" style="float:right" v-show="$isAdmin">
             <template slot="title">管理员</template>
             <el-menu-item index="/userManager">用户管理</el-menu-item>
             <el-menu-item index="/bookManager">书籍管理</el-menu-item>
@@ -73,32 +73,29 @@ export default {
       src: require("../../assets/images/logo.png"),
       fit: "fill",
       activeIndex: "/user/userInfo",
-      isAdmain: true,
       input: "",
-      type:""
+      type: ""
     };
   },
   methods: {
     handleSelect(key) {
       var nowUrl = this.$route.path;
-
       if (nowUrl === key) {
         location.reload();
         return;
       }
-      if (key === "/exit") {
-        console.log(key);
-        return;
+      if (key != "/exit") {
+        this.$router.push({
+          path: key
+        });
+      } else {
+        this.$loginOut();
       }
-      this.activeIndex = key;
-      this.$router.push({
-        path: key
-      });
     }
   },
-  watch:{
-    'activeIndex':function(){
-      this.$emit('getSelect',this.activeIndex)
+  watch: {
+    activeIndex: function() {
+      this.$emit("getSelect", this.activeIndex);
     }
   }
 };
