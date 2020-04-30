@@ -27,7 +27,7 @@ const routes = [
 
   },
   {
-    path: '/standardHome/:type',
+    path: '/standardHome/:bookType',
     name: 'StandardHome',
     component: () => import('../views/standard/StandardHome')
   },

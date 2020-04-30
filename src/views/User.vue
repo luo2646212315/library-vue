@@ -16,7 +16,8 @@ import message from "../components/user/Message";
 import upload from "../components/user/Upload";
 export default {
   name: "UserInfo",
-  created() {},
+  created() {
+  },
   props: {
     msg: String
   },
@@ -29,7 +30,7 @@ export default {
   },
   data() {
     return {
-      command: "bookshelf"
+      command: ""
     };
   },
   methods: {
