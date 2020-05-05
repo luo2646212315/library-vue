@@ -15,22 +15,31 @@
           <el-image src="images/11.jpg" :fit="fit"></el-image>
         </div>
         <div class="book-info">
-          <div class="book-name">斗罗大陆</div>
+          <div class="book-name">{{bookInfo.bookName}}</div>
           <div class="book-other">
             <span class="h">
               <span>
-                <i class="el-icon-s-custom"></i>迪巴拉爵士
+                <i class="el-icon-s-custom"></i>
+                {{bookInfo.bookAuthor}}
               </span>
             </span>
             <span class="c">|</span>
             <span class="h">
-              <span>历史</span>
+              <span>{{bookInfo.bookTypeName}}</span>
             </span>
             <span class="c">|</span>
-            <span>连载</span>
+            <span>{{bookInfo.bookStatus|transFromBookStateFilter}}</span>
           </div>
-          <div class="book-simple-desc">心潮澎湃，无限幻想，迎风挥击千层浪，少年不败热血！</div>
-          <div class="book-num"></div>
+          <div class="book-simple-desc">
+            <span class="zi">{{bookInfo.bookFullDescribe|maxTextFillFilter(100)}}</span>
+          </div>
+          <div class="book-num">
+            <span class="arg">{{50025|transFromNumStateFilter}}</span>字
+            <span class="c">|</span>
+            <span class="arg">{{500|transFromNumStateFilter}}</span>看过
+            <span class="c">|</span>
+            <span class="arg">{{50|transFromNumStateFilter}}</span>总推荐
+          </div>
           <div class="book-button">
             <el-row>
               <el-button size="medium" type="danger">免费试读</el-button>
@@ -67,17 +76,46 @@
 </template>
 
 <script>
+import api from "../../api";
 export default {
   name: "BookDesc",
   props: {
     msg: String
   },
+  created() {
+    // var bookName = this.$route.query.bookName;
+    // this.getRecreationBookByName(bookName);
+  },
   data() {
     return {
       fit: "fill",
       value: 2,
-      scoreColors: ["#99A9BF", "#F7BA2A", "#FF9900"]
+      scoreColors: ["#99A9BF", "#F7BA2A", "#FF9900"],
+      bookInfo: {
+        bookId: 177,
+        bookName: "至尊归元",
+        bookBigType: "101",
+        bookTypeName: "玄幻",
+        bookTag: null,
+        bookAuthor: "恋风",
+        bookCover: "至尊归元",
+        bookScore: 0.0,
+        bookSimpleDescribe: null,
+        bookFullDescribe:
+          "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+        bookStatus: "00",
+        bookFreeChapterNum: 0,
+        bookChapterPrice: null,
+        bookCheckStatus: null
+      }
     };
+  },
+  methods: {
+    getRecreationBookByName(name) {
+      api.getRecreationBookByName(name).then(res => {
+        this.bookInfo = res.data[0];
+      });
+    }
   }
 };
 </script>
@@ -173,7 +211,7 @@ export default {
 }
 .book-info .book-name {
   /* border: red 1px solid; */
-  height: 45px;
+  height: 40px;
   font-size: 28px;
   font-family: PingFangSC-Regular, HelveticaNeue-Light, "Helvetica Neue Light",
     "Microsoft YaHei", sans-serif;
@@ -182,18 +220,32 @@ export default {
 .book-info .book-other {
   color: #a6a6a6;
   /* border: red 1px solid; */
-  height: 40px;
-  line-height: 40px;
+  height: 30px;
+  line-height: 30px;
   font-size: 14px;
   font-family: PingFangSC-Regular, -apple-system, Simsun;
   width: 100%;
 }
 .book-info .book-simple-desc {
   /* border: red 1px solid; */
+  height: 55px;
+  width: 100%;
+  /* border: 1px solid red; */
+}
+.book-info .book-simple-desc .zi {
   font-family: PingFangSC-Regular, -apple-system, Simsun;
   font-size: 14px;
-  height: 65px;
+}
+.book-info .book-num {
   width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  color: #a6a6a6;
+}
+.book-info .book-num .arg {
+  font-size: 20px;
+  color: black;
 }
 .book-info .book-button {
   /* border: red 1px solid; */
@@ -208,7 +260,7 @@ export default {
   color: red;
 }
 .c {
-  margin: 1px 8px 0;
+  margin: 1px 12px 0;
 }
 .el-image {
   width: 100%;

@@ -74,19 +74,7 @@
                   :picker-options="pickerOptions"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="自动扣费">
-                <el-switch v-model="autoReturn"></el-switch>
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="自动扣费为0.9金币/天，结算时会计算信誉分"
-                  placement="right"
-                >
-                  <svg class="icon" aria-hidden="true">
-                    <use xlink:href="#icon-bangzhu666" />
-                  </svg>
-                </el-tooltip>
-              </el-form-item>
+
               <el-form-item v-model="totalMoney" label="合计">
                 <span>{{totalMoney}}</span> 金币
               </el-form-item>
@@ -135,7 +123,6 @@ export default {
           }
         ]
       },
-      autoReturn: false,
       totalMoney: 0.0,
       ruleForm: {
         time: ""
@@ -154,14 +141,10 @@ export default {
   },
   methods: {
     settlement() {
-      if (this.autoReturn) {
-        this.totalMoney = 0.9;
-      } else {
-        var ss = this.ruleForm.time.getTime() - new Date().getTime();
-        var sss = ss / (3600 * 1000 * 24) + 2;
-        var day = parseInt(sss);
-        this.totalMoney = day * 1;
-      }
+      var ss = this.ruleForm.time.getTime() - new Date().getTime();
+      var sss = ss / (3600 * 1000 * 24) + 2;
+      var day = parseInt(sss);
+      this.totalMoney = day * 1;
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -177,9 +160,6 @@ export default {
   },
   watch: {
     "ruleForm.time": function() {
-      this.settlement();
-    },
-    autoReturn: function() {
       this.settlement();
     }
   }

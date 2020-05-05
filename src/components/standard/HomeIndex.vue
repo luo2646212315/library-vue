@@ -2,51 +2,38 @@
   <div id="homeIndex">
     <div class="middle">
       <div class="left">
-        <div class="title">中图分类</div>
+        <div class="title">图书分类</div>
         <div class="ul-div">
           <ul class="style-ul">
-            <li>
-              <div class="left-icon">
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#icon-F-jingji" />
-                </svg>
-              </div>
-              <div class="right-a">
-                <a>马克思主义、列宁主义</a>
-              </div>
-            </li>
-            <li>
-              <div class="left-icon">
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#icon-F-jingji" />
-                </svg>
-              </div>
-              <div class="right-a">
-                <a href="#">马克思主义</a>
-              </div>
-            </li>
-            <li>
-              <div class="left-icon">
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#icon-F-jingji" />
-                </svg>
-              </div>
-              <div class="right-a">
-                <a>马克思主义</a>
-              </div>
+            <li
+              v-for="bookType in bookTypes"
+              :key="bookType.typeId"
+              :class="bookType.typeFlag==currentType?'currentSelect':''"
+            >
+              <span @click="handleSelect(bookType.typeFlag)">
+                <div class="left-icon">
+                  <svg class="icon" aria-hidden="true">
+                    <use :xlink:href="bookType.typeIcon" />
+                  </svg>
+                </div>
+                <div class="right-a">
+                  <span>{{bookType.typeName}}</span>
+                </div>
+                <span>({{bookType.bookNum}})</span>
+              </span>
             </li>
           </ul>
         </div>
       </div>
       <div class="right">
         <div class="top-book">
-          <div class="book-info" v-for="i in 9" :key="i">
+          <div class="book-info" v-for="book in bookInfo.list" :key="book.bookId">
             <div class="book-cover">
               <el-image style="width: 100%; height: 100%" src="../images/11.jpg" :fit="fit"></el-image>
             </div>
-            <div class="book-name">{{name | maxTextFilter(9)}}</div>
-            <div class="book-author">作者: 袁琳、唐敦双</div>
-            <div class="book-publish">关键词：新华出版社</div>
+            <div class="book-name">{{book.bookName}}</div>
+            <div class="book-author">作者: {{book.authorCountry}}·{{book.bookAuthor}}</div>
+            <div class="book-publish">关键词：{{book.bookKeyWords}}</div>
           </div>
         </div>
         <div class="buttom-page">
@@ -67,25 +54,62 @@
 </template>
 
 <script>
+import api from "../../api/index";
 export default {
   name: "homeIndex",
   props: {
-    msg: String
+    bookTypes: Array
+  },
+  created() {
+    this.currentType = this.$route.params.bookType;
+    this.getStandardBookBookByType("201", this.currentPage, 9);
   },
   data() {
     return {
       currentPage: 1,
-      name: "马克思恩格斯社会建设理论及其",
-      fit: "fill"
+      currentType: "201",
+      fit: "fill",
+      bookInfo: {}
     };
   },
-
   methods: {
+    handleSelect(val) {
+      console.log(val);
+      this.currentType = val;
+      var oldUrl = this.$route.path;
+      var newUrl = "/standardHome/" + val;
+      console.log(oldUrl + "---" + newUrl);
+      if (oldUrl === newUrl) {
+        location.reload();
+        return;
+      }
+      this.$router.push({
+        path: newUrl
+      });
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.getStandardBookBookByType("201", val, 9);
+    },
+    getStandardBookBookByType(type, pageNo, pageSize) {
+      api.getStandardBookBookByType(type, pageNo, pageSize).then(res => {
+        this.bookInfo = res.data[0];
+      });
+    }
+  },
+  watch: {
+    $route: {
+      handler() {
+        this.currentType = this.$route.params.bookType;
+        console.log(this.currentType);
+        //深度监听，同时也可监听到param参数变化
+      },
+      deep: true
+    },
+    currentType: function(val) {
+      console.log(val);
     }
   },
   filters: {
@@ -157,7 +181,7 @@ a {
   text-decoration: none;
   color: gray;
 }
-.left .style-ul li .right-a :hover {
+.left .style-ul li :hover {
   cursor: pointer;
   color: red;
 }
@@ -190,17 +214,35 @@ a {
   height: 50px;
   line-height: 50px;
   font-size: 18px;
+  max-width: 100%;
   font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: auto;
+  text-overflow: ellipsis;
 }
 .book-info .book-author {
   height: 40px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: auto;
 }
 .book-info .book-publish {
   height: 30px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: auto;
 }
 .right .buttom-page {
   height: 50px;
   width: 100%;
   /* border: 1px solid green; */
+}
+.currentSelect {
+  color: orange;
 }
 </style>

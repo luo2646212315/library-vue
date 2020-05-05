@@ -45,3 +45,15 @@ export const deleteUser = userId =>{
 export const getBookType = bigType =>{
     return axios.get(base.baseUrl+"/book/auth/getBookType",{bigType:bigType})
 }
+//获取一些娱乐书籍
+export const getSomeRecreationBook = num =>{
+    return axios.get(base.baseUrl+"/book/auth/getSomeRecreationBook",{num:num})
+}
+//通过书籍名获取娱乐书籍
+export const getRecreationBookByName = bookName =>{
+    return axios.get(base.baseUrl+"/book/auth/getRecreationBookByName",{bookName:bookName})
+}
+//通过书籍类型获取名著
+export const getStandardBookBookByType = (type,pageNo,pageSize) =>{
+    return axios.get(base.baseUrl+"/book/auth/getStandardBookBookByType",{type,pageNo,pageSize})
+}

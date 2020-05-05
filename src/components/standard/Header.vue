@@ -14,19 +14,21 @@
           <template slot="title">
             <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
           </template>
-          <el-menu-item index="/standardHome/wenxue">文学专区</el-menu-item>
+          <el-menu-item index="/standardHome/201">文学专区</el-menu-item>
           <el-menu-item index="/recreationHome">娱乐专区</el-menu-item>
         </el-submenu>
-
-        <el-menu-item index="/standardHome/wenxue">首页</el-menu-item>
-        <el-menu-item index="/standardHome/wenxue">文学</el-menu-item>
-        <el-menu-item index="/standardHome/jingji">经济</el-menu-item>
-        <el-menu-item index="/paihang">历史、地理</el-menu-item>
-        <el-menu-item index="/paihang">政治、法律</el-menu-item>
-        <el-submenu index="/more">
+        <el-menu-item
+          :index="'/standardHome/'+bookType.typeFlag"
+          v-for="bookType in bookTypes.slice(0,4)"
+          :key="bookType.typeId"
+        >{{bookType.typeName}}</el-menu-item>
+        <el-submenu index="/more" v-show="bookTypes.slice(4).length>0">
           <template slot="title">更多</template>
-          <el-menu-item index="/falv">法律</el-menu-item>
-          <el-menu-item index="/yuanlin">园林</el-menu-item>
+          <el-menu-item
+            :index="'/standardHome/'+bookType.typeFlag"
+            v-for="bookType in bookTypes.slice(4)"
+            :key="bookType.typeId"
+          >{{bookType.typeName}}</el-menu-item>
         </el-submenu>
 
         <el-menu-item style="float:right" index="/user/bookshelf">
@@ -77,20 +79,28 @@
 <script>
 export default {
   name: "HeaderFloat",
-  created() {},
+  props: {
+    bookTypes: Array
+  },
+ created() {
+    this.activeIndex = '/standardHome/'+this.$route.params.bookType;
+  },
+  mounted() {
+    console.log(this.bookTypes);
+  },
   data() {
     return {
       src: require("../../assets/images/logo.png"),
       fit: "fill",
       selectType: "",
-      activeIndex: "1",
+      activeIndex: "/standardHome/201",
       userInfo: "",
       input: ""
     };
   },
   methods: {
     s() {
-      console.log(this.selectType);
+      console.log(this.selectType+"-----------");
     },
     handleSelect(key) {
       var nowUrl = this.$route.path;
@@ -105,6 +115,15 @@ export default {
       } else {
         this.$loginOut();
       }
+    }
+  },
+  watch:{
+     $route: {
+      handler() {
+        this.activeIndex = '/standardHome/'+this.$route.params.bookType;
+        //深度监听，同时也可监听到param参数变化
+      },
+      deep: true
     }
   }
 };
@@ -126,7 +145,7 @@ export default {
   height: 60px;
 }
 #header ul {
-  width: 80%;
+  width: 1200px;
   margin: auto;
 }
 .el-menu.el-menu--horizontal {

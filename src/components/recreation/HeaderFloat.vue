@@ -13,7 +13,7 @@
         <template slot="title">
           <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
         </template>
-        <el-menu-item index="/standardHome/wenxue">文学专区</el-menu-item>
+        <el-menu-item index="/standardHome/201">文学专区</el-menu-item>
         <el-menu-item index="/recreationHome">娱乐专区</el-menu-item>
       </el-submenu>
 
@@ -108,7 +108,7 @@ export default {
   height: 60px;
 }
 #header ul {
-  width: 80%;
+  width: 1200px;
   margin: auto;
 }
 .loginReg {

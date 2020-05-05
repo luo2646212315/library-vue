@@ -32,25 +32,25 @@
 
         <div class="main-left-foot">
           <div class="foot-title">
-            <span>名著强推</span>
+            <span>本周强推</span>
           </div>
           <div class="foot-concent">
             <ul class="con-ul">
-              <li>
+              <li v-for="book in weekRec" :key="book.bookId">
                 <div class="book-type">
                   <span>「</span>
-                  <span class="book-type-zi">玄幻</span>
+                  <span class="book-type-zi">{{book.bookTypeName}}</span>
                   <span>」</span>
                 </div>
-                <div class="book-name">逆天成神</div>
-                <div class="book-auother">耳根</div>
+                <div class="book-name">
+                  <router-link
+                    tag="a"
+                    :title="book.bookName"
+                    :to="{ name: 'recreationBookInfo', query: {bookName: book.bookName}}"
+                  >{{book.bookName}}</router-link>
+                </div>
+                <div class="book-auother">{{book.bookAuthor}}</div>
               </li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-              <li>5</li>
-              <li>6</li>
-              <li>7</li>
             </ul>
           </div>
         </div>
@@ -76,46 +76,18 @@
               </el-carousel>
             </div>
           </div>
-          <div class="foot-message">
-            <div>
+          <div class="foot-message" v-if="topMiddle">
+            <div v-for="book in topMiddle" :key="book.bookId">
               <div class="message-concent">
                 <div class="book-name">
-                  <span>绝世唐门</span>
+                  <span>{{book.bookName}}</span>
                 </div>
                 <div class="book-zhui">
-                  <span style="font-size: 18px;font-weight: bold;font-style: italic;">5000</span>
-                  <span style="font-size: 12px;">人在追</span>
+                  <span class="num">5000</span>
+                  <span class="num-zi">人在追</span>
                 </div>
                 <div class="book-desc">
-                  <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="message-concent">
-                <div class="book-name">
-                  <span>绝世唐门</span>
-                </div>
-                <div class="book-zhui">
-                  <span>5000</span>
-                  <span>人在追</span>
-                </div>
-                <div class="book-desc">
-                  <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="message-concent">
-                <div class="book-name">
-                  <span>绝世唐门</span>
-                </div>
-                <div class="book-zhui">
-                  <span>5000</span>
-                  <span>人在追</span>
-                </div>
-                <div class="book-desc">
-                  <span>重生在周董的演唱会上，许阳对着话筒说：我不想点歌，可以把话筒给我吗？</span>
+                  <span>{{book.bookFullDescribe|maxTextFillFilter(55)}}</span>
                 </div>
               </div>
             </div>
@@ -145,14 +117,22 @@
                 class="card"
                 :key="index"
                 :style="footCarIndex==index ? 'display:block':'display:none'"
-                v-for="(item,index) in myMiddleFootCarousel"
+                v-for="(book,index) in myMiddleFootCarousel"
               >
-                <div class="book-name">{{item.bookName}}</div>
+                <div class="book-name">
+                  <router-link
+                    :to="{ name: 'recreationBookInfo', query: {bookName: book.bookName}}"
+                  >{{book.bookName}}</router-link>
+                </div>
                 <div class="book-desc">
-                  <span>{{item.bookDesc}}---{{footCarIndex}}</span>
+                  <span>{{book.bookFullDescribe|maxTextFillFilter(40)}}---{{footCarIndex}}</span>
                 </div>
                 <div>
-                  <el-button type="danger" size="small" round>书籍详情</el-button>
+                  <el-button type="danger" size="small" round>
+                    <router-link
+                      :to="{ name: 'recreationBookInfo', query: {bookName: book.bookName}}"
+                    >书籍详情</router-link>
+                  </el-button>
                 </div>
               </div>
             </div>
@@ -160,8 +140,8 @@
           <div class="middle-foot-foot">
             <div class="foot-concent">
               <div class="concent">
-                <div class="book-name left-name">斗破苍穹</div>
-                <div class="book-desc">四处找寻那些即将化龙的小幼灵，将它们驯养成当世无双的龙王！</div>
+                <div class="book-name left-name">{{buttomMiddle[0].bookName}}</div>
+                <div class="book-desc">{{buttomMiddle[0].bookFullDescribe|maxTextFillFilter(40)}}</div>
               </div>
               <div class="book-cover">
                 <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
@@ -169,8 +149,8 @@
             </div>
             <div class="foot-concent right-concent">
               <div class="concent">
-                <div class="book-name right-name">斗破苍穹</div>
-                <div class="book-desc">四处找寻那些即将化龙的小幼灵，将它们驯养成当世无双的龙王！</div>
+                <div class="book-name right-name">{{buttomMiddle[1].bookName}}</div>
+                <div class="book-desc">{{buttomMiddle[1].bookFullDescribe|maxTextFillFilter(40)}}</div>
               </div>
               <div class="book-cover">123</div>
             </div>
@@ -205,25 +185,25 @@
         </div>
         <div class="main-left-foot">
           <div class="foot-title">
-            <span>娱乐强推</span>
+            <span>网文新风</span>
           </div>
           <div class="foot-concent">
             <ul class="con-ul">
-              <li>
+              <li v-for="book in webRec" :key="book.bookId">
                 <div class="book-type">
                   <span>「</span>
-                  <span class="book-type-zi">玄幻</span>
+                  <span class="book-type-zi">{{book.bookTypeName}}</span>
                   <span>」</span>
                 </div>
-                <div class="book-name">逆天成神</div>
-                <div class="book-auother">耳根</div>
+                <div class="book-name">
+                  <router-link
+                    tag="a"
+                    :title="book.bookName"
+                    :to="{ name: 'recreationBookInfo', query: {bookName: book.bookName}}"
+                  >{{book.bookName}}</router-link>
+                </div>
+                <div class="book-auother">{{book.bookAuthor}}</div>
               </li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-              <li>5</li>
-              <li>6</li>
-              <li>7</li>
             </ul>
           </div>
         </div>
@@ -239,6 +219,10 @@ export default {
   components: {},
   created() {
     this.getBookType("02");
+    this.getSomeRecreationBook(30);
+  },
+  mounted() {
+    this.footCarousel = this.myMiddleFootCarousel;
   },
   data() {
     return {
@@ -268,20 +252,99 @@ export default {
           bookNum: 12454
         }
       ],
+      weekRec: [
+        {
+          bookId: 177,
+          bookName: "至尊归元",
+          bookBigType: "101",
+          bookTypeName: "玄幻",
+          bookTag: null,
+          bookAuthor: "恋风",
+          bookCover: "至尊归元",
+          bookScore: 0.0,
+          bookSimpleDescribe: null,
+          bookFullDescribe:
+            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+          bookStatus: "00",
+          bookFreeChapterNum: 0,
+          bookChapterPrice: null,
+          bookCheckStatus: null
+        }
+      ],
+      webRec: [
+        {
+          bookId: 177,
+          bookName: "至尊归元",
+          bookBigType: "101",
+          bookTypeName: "玄幻",
+          bookTag: null,
+          bookAuthor: "恋风",
+          bookCover: "至尊归元",
+          bookScore: 0.0,
+          bookSimpleDescribe: null,
+          bookFullDescribe:
+            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+          bookStatus: "00",
+          bookFreeChapterNum: 0,
+          bookChapterPrice: null,
+          bookCheckStatus: null
+        }
+      ],
       myMiddleTopCarousel: [
         {
-          bookName: "",
-          bookImage: "",
-          bookDesc: "",
-          author: ""
+          bookId: 177,
+          bookName: "至尊归元",
+          bookBigType: "101",
+          bookTypeName: "玄幻",
+          bookTag: null,
+          bookAuthor: "恋风",
+          bookCover: "至尊归元",
+          bookScore: 0.0,
+          bookSimpleDescribe: null,
+          bookFullDescribe:
+            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+          bookStatus: "00",
+          bookFreeChapterNum: 0,
+          bookChapterPrice: null,
+          bookCheckStatus: null
+        }
+      ],
+      topMiddle: [
+        {
+          bookId: 177,
+          bookName: "至尊归元",
+          bookBigType: "101",
+          bookTypeName: "玄幻",
+          bookTag: null,
+          bookAuthor: "恋风",
+          bookCover: "至尊归元",
+          bookScore: 0.0,
+          bookSimpleDescribe: null,
+          bookFullDescribe:
+            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+          bookStatus: "00",
+          bookFreeChapterNum: 0,
+          bookChapterPrice: null,
+          bookCheckStatus: null
         }
       ],
       myMiddleFootCarousel: [
         {
-          bookName: "第一本",
-          bookImage: "",
-          bookDesc: "第一",
-          author: "1"
+          bookId: 177,
+          bookName: "至尊归元",
+          bookBigType: "101",
+          bookTypeName: "玄幻",
+          bookTag: null,
+          bookAuthor: "恋风",
+          bookCover: "至尊归元",
+          bookScore: 0.0,
+          bookSimpleDescribe: null,
+          bookFullDescribe:
+            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+          bookStatus: "00",
+          bookFreeChapterNum: 0,
+          bookChapterPrice: null,
+          bookCheckStatus: null
         },
         {
           bookName: "第2本",
@@ -313,6 +376,26 @@ export default {
           bookDesc: "第6",
           author: "6"
         }
+      ],
+      footCarousel: [],
+      buttomMiddle: [
+        {
+          bookId: 177,
+          bookName: "至尊归元",
+          bookBigType: "101",
+          bookTypeName: "玄幻",
+          bookTag: null,
+          bookAuthor: "恋风",
+          bookCover: "至尊归元",
+          bookScore: 0.0,
+          bookSimpleDescribe: null,
+          bookFullDescribe:
+            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+          bookStatus: "00",
+          bookFreeChapterNum: 0,
+          bookChapterPrice: null,
+          bookCheckStatus: null
+        }
       ]
     };
   },
@@ -336,7 +419,21 @@ export default {
       var _this = this;
       api.getBookType(bigType).then(res => {
         console.log(res);
-        _this.bookTypes = res.data[0]; 
+        _this.bookTypes = res.data[0];
+      });
+    },
+    getSomeRecreationBook(num) {
+      api.getSomeRecreationBook(num).then(res => {
+        var book = res.data[0];
+        //注意，这里要求书籍数量足够----------否则会错
+        this.weekRec = book.slice(0, 7);
+        this.webRec = book.slice(7, 14);
+        this.topMiddle = book.slice(14, 17);
+        this.buttomMiddle = book.slice(17, 19);
+        this.myMiddleTopCarousel = book.slice(19, 23);
+        this.myMiddleFootCarousel = book.slice(23, 29);
+        console.log("========================");
+        console.log(this.webRec);
       });
     }
   },
@@ -379,7 +476,7 @@ body {
 }
 #main-main {
   margin: auto;
-  width: 80%;
+  width: 1200px;
   height: 100%;
   background-color: #fff;
 }
@@ -445,7 +542,6 @@ svg {
 .ul-ul .ul-item .li-image .icon {
   font-size: 25px;
 }
-
 
 .ul-ul .ul-item .li-concent {
   float: left;
@@ -529,22 +625,33 @@ svg {
 }
 .foot-concent .con-ul .book-type {
   height: 100%;
-  width: 60px;
+  max-width: 90px;
   float: left;
   line-height: 40px;
-  font-size: 15px;
+  font-size: 14px;
   color: grey;
 }
 
 .foot-concent .con-ul .book-name {
   height: 100%;
+  max-width: 90px;
   float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
   line-height: 40px;
-  font-size: 15px;
+  font-size: 14px;
 }
+
 .foot-concent .con-ul .book-auother {
   height: 100%;
   float: right;
+  max-width: 60px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: right;
   line-height: 40px;
   font-size: 12px;
   /* color: rgb(199, 196, 196); */
@@ -583,6 +690,7 @@ svg {
 #main-middle-foot .top-show .right-concent .book-desc {
   font-size: 13px;
   height: 60px;
+  padding-left: 40px;
   font-family: PingFangSC-Regular, -apple-system, Simsun;
 }
 #main-middle-foot .middle-foot-foot {
@@ -604,14 +712,27 @@ svg {
 .foot-message .message-concent .book-name {
   height: 25px;
   font-size: 18px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .foot-message .message-concent .book-zhui {
   height: 25px;
   color: #bf2c24;
 }
+.foot-message .message-concent .book-zhui .num {
+  font-size: 18px;
+  font-weight: bold;
+  font-style: italic;
+}
+.foot-message .message-concent .book-zhui .num-zi {
+  font-size: 12px;
+}
 .foot-message .message-concent .book-desc {
   height: 50px;
   font-size: 12px;
+  padding-right: 17px;
 }
 .middle-foot-foot .foot-concent {
   width: 45%;
@@ -643,6 +764,10 @@ svg {
 .middle-foot-foot .foot-concent .concent .book-name {
   font-size: 18px;
   height: 30%;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .middle-foot-foot .foot-concent .concent .book-desc {
   font-size: 12px;

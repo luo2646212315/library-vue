@@ -152,7 +152,7 @@ export default {
   background-color: #e9eef3;
 }
 .middle-div {
-  width: 80%;
+  width: 1200px;
   height: 100%;
   margin: auto;
 }
