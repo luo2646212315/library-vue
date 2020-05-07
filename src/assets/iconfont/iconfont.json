@@ -6,6 +6,118 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "893246",
+      "name": "推荐票",
+      "font_class": "tuijianpiao",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "8602186",
+      "name": "打赏",
+      "font_class": "pintu_huabanfuben",
+      "unicode": "e6d9",
+      "unicode_decimal": 59097
+    },
+    {
+      "icon_id": "9856489",
+      "name": "加入书架",
+      "font_class": "shujia_huaban",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "13948810",
+      "name": "设 置",
+      "font_class": "shezhi1",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "4131163",
+      "name": "书籍",
+      "font_class": "shuji",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "1104787",
+      "name": "返回书页",
+      "font_class": "fanhuishuye",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "3416381",
+      "name": "取消置顶",
+      "font_class": "quxiaozhiding",
+      "unicode": "e917",
+      "unicode_decimal": 59671
+    },
+    {
+      "icon_id": "14388836",
+      "name": "置顶",
+      "font_class": "zhiding",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "814556",
+      "name": "置顶",
+      "font_class": "top",
+      "unicode": "e69d",
+      "unicode_decimal": 59037
+    },
+    {
+      "icon_id": "1660114",
+      "name": "科学名著",
+      "font_class": "kexuemingzhu",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "4694976",
+      "name": "自动订阅",
+      "font_class": "zidongdingyue",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "6658227",
+      "name": "管理员",
+      "font_class": "guanliyuan",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "11328386",
+      "name": "娱乐",
+      "font_class": "yule",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "683533",
+      "name": "上传",
+      "font_class": "shangchuan",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "11493140",
+      "name": "上 传",
+      "font_class": "shangchuan1",
+      "unicode": "e6be",
+      "unicode_decimal": 59070
+    },
+    {
+      "icon_id": "1603445",
+      "name": "女频",
+      "font_class": "girl",
+      "unicode": "e73d",
+      "unicode_decimal": 59197
+    },
+    {
       "icon_id": "1032795",
       "name": "小说",
       "font_class": "xiaoshuo",

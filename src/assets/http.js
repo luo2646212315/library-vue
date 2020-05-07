@@ -3,36 +3,39 @@ import router from "../router"
 
 //跳转登录页面
 const toLogin = () => {
-    router.push({
-        path: '/loginRegisterForget'
+    router.replace({
+        path: "/loginRegisterForget/login",
+        query: { "redirect": router.currentRoute.fullPath }
     })
 }
-
 //错误信息处理
-const errorHandel = (status, other) => {
-    switch (status) {
-        case 400:
-            console.log("信息校验失败");
-            break;
+const handel = (res) => {
+    var code = res.data.code;
+    var message = res.data.message;
+    console.log(router.currentRoute)
+    switch (code) {
         case 401:
             //去登陆
             toLogin();
             console.log("认证失败");
             break;
-        case 404:
-            console.log("请求的资源不存在");
+        case 402:
+            //去登陆
+            toLogin();
             break;
-        default:
-            console.log(other);
+        case 403:
+            break;
+        case 404:
+            console.log(message);
             break;
     }
 }
+
 //创建axios实例
 var instance = axios.create({ timeout: 5000 });
 // instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 instance.interceptors.request.use(function (config) {
-    console.log(config);
     config.headers.Authorization = localStorage.getItem('library-token');
     return config;
 }, function (error) {
@@ -41,16 +44,13 @@ instance.interceptors.request.use(function (config) {
 
 instance.interceptors.response.use(
     //请求成功
-    res => res.status === 200 ? Promise.resolve(res) : Promise.reject(res),
+    res => {
+        handel(res);
+        return res;
+    },
     //请求失败
     error => {
-        const { response } = error;
-        if (response) {
-            errorHandel(response.status, response.data.messsage);
-            return Promise.reject(response);
-        } else {
-            console.log("断网了");
-        }
+        return error;
     }
 );
 

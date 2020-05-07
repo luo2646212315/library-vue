@@ -77,13 +77,12 @@
 </template>
 
 <script>
+import api from "../../api/index";
 export default {
   name: "HeaderFloat",
-  props: {
-    bookTypes: Array
-  },
- created() {
-    this.activeIndex = '/standardHome/'+this.$route.params.bookType;
+  created() {
+    this.getBookTypes("01");
+    this.activeIndex = "/standardHome/" + this.$route.params.bookType;
   },
   mounted() {
     console.log(this.bookTypes);
@@ -95,12 +94,13 @@ export default {
       selectType: "",
       activeIndex: "/standardHome/201",
       userInfo: "",
-      input: ""
+      input: "",
+      bookTypes: []
     };
   },
   methods: {
     s() {
-      console.log(this.selectType+"-----------");
+      console.log(this.selectType + "-----------");
     },
     handleSelect(key) {
       var nowUrl = this.$route.path;
@@ -115,12 +115,18 @@ export default {
       } else {
         this.$loginOut();
       }
+    },
+    getBookTypes(bigType) {
+      var _this = this;
+      api.getBookType(bigType).then(res => {
+        _this.bookTypes = res.data[0];
+      });
     }
   },
-  watch:{
-     $route: {
+  watch: {
+    $route: {
       handler() {
-        this.activeIndex = '/standardHome/'+this.$route.params.bookType;
+        this.activeIndex = "/standardHome/" + this.$route.params.bookType;
         //深度监听，同时也可监听到param参数变化
       },
       deep: true

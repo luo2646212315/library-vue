@@ -27,7 +27,12 @@
       </div>
       <div class="right">
         <div class="top-book">
-          <div class="book-info" v-for="book in bookInfo.list" :key="book.bookId">
+          <div
+            class="book-info"
+            v-for="book in bookInfo.list"
+            :key="book.bookId"
+            @click="jumpBookInfo(book.bookName)"
+          >
             <div class="book-cover">
               <el-image style="width: 100%; height: 100%" src="../images/11.jpg" :fit="fit"></el-image>
             </div>
@@ -42,9 +47,9 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page.sync="currentPage"
-              :page-size="9"
+              :page-size="pageSize"
               layout="total,prev, pager, next, jumper"
-              :total="100"
+              :total="total"
             ></el-pagination>
           </div>
         </div>
@@ -57,18 +62,19 @@
 import api from "../../api/index";
 export default {
   name: "homeIndex",
-  props: {
-    bookTypes: Array
-  },
   created() {
+    this.getBookTypes("01");
     this.currentType = this.$route.params.bookType;
-    this.getStandardBookBookByType("201", this.currentPage, 9);
+    this.getStandardBookByType("201", this.currentPage, 9);
   },
   data() {
     return {
       currentPage: 1,
+      pageSize: 9,
+      total: 0,
       currentType: "201",
       fit: "fill",
+      bookTypes: [],
       bookInfo: {}
     };
   },
@@ -78,7 +84,6 @@ export default {
       this.currentType = val;
       var oldUrl = this.$route.path;
       var newUrl = "/standardHome/" + val;
-      console.log(oldUrl + "---" + newUrl);
       if (oldUrl === newUrl) {
         location.reload();
         return;
@@ -87,15 +92,28 @@ export default {
         path: newUrl
       });
     },
+    jumpBookInfo(val) {
+      this.$router.push({
+        path: "/standard/bookInfo",
+        query: { bookName: val }
+      });
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      this.getStandardBookBookByType("201", val, 9);
+      this.getStandardBookByType(this.currentType, val, 9);
     },
-    getStandardBookBookByType(type, pageNo, pageSize) {
-      api.getStandardBookBookByType(type, pageNo, pageSize).then(res => {
+    getBookTypes(bigType) {
+      var _this = this;
+      api.getBookType(bigType).then(res => {
+        _this.bookTypes = res.data[0];
+      });
+    },
+    getStandardBookByType(type, pageNo, pageSize) {
+      api.getStandardBookByType(type, pageNo, pageSize).then(res => {
         this.bookInfo = res.data[0];
+        this.total = this.bookInfo.total;
       });
     }
   },
@@ -103,13 +121,13 @@ export default {
     $route: {
       handler() {
         this.currentType = this.$route.params.bookType;
-        console.log(this.currentType);
         //深度监听，同时也可监听到param参数变化
       },
       deep: true
     },
     currentType: function(val) {
-      console.log(val);
+      this.currentPage = 1;
+      this.getStandardBookByType(val, 1, 9);
     }
   },
   filters: {

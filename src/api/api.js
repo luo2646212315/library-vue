@@ -54,6 +54,18 @@ export const getRecreationBookByName = bookName =>{
     return axios.get(base.baseUrl+"/book/auth/getRecreationBookByName",{bookName:bookName})
 }
 //通过书籍类型获取名著
-export const getStandardBookBookByType = (type,pageNo,pageSize) =>{
-    return axios.get(base.baseUrl+"/book/auth/getStandardBookBookByType",{type,pageNo,pageSize})
+export const getStandardBookByType = (type,pageNo,pageSize) =>{
+    return axios.get(base.baseUrl+"/book/auth/getStandardBookByType",{type,pageNo,pageSize})
+}
+//通过书籍名获取名著书籍
+export const getStandardBookByName = bookName =>{
+    return axios.get(base.baseUrl+"/book/auth/getStandardBookByName",{bookName:bookName})
+}
+//通过书籍名获取名著书籍
+export const getStandardBookChapterByUrl = bookUrl =>{
+    return axios.get(base.baseUrl+"/book/auth/getStandardBookChapterByUrl",{bookUrl:bookUrl})
+}
+//通过书籍名获取名著书籍
+export const getChapterCon = (type,bookUrl,chapterNo) =>{
+    return axios.get(base.baseUrl+"/book/getChapterCon",{type,bookUrl,chapterNo})
 }

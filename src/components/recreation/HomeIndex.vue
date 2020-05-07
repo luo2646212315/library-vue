@@ -80,14 +80,20 @@
             <div v-for="book in topMiddle" :key="book.bookId">
               <div class="message-concent">
                 <div class="book-name">
-                  <span>{{book.bookName}}</span>
+                  <span>
+                    <router-link
+                      tag="a"
+                      :title="book.bookName"
+                      :to="{ name: 'recreationBookInfo', query: {bookName: book.bookName}}"
+                    >{{book.bookName}}</router-link>
+                  </span>
                 </div>
                 <div class="book-zhui">
                   <span class="num">5000</span>
                   <span class="num-zi">人在追</span>
                 </div>
                 <div class="book-desc">
-                  <span>{{book.bookFullDescribe|maxTextFillFilter(55)}}</span>
+                  <span>{{book.bookFullDescribe}}</span>
                 </div>
               </div>
             </div>
@@ -125,9 +131,9 @@
                   >{{book.bookName}}</router-link>
                 </div>
                 <div class="book-desc">
-                  <span>{{book.bookFullDescribe|maxTextFillFilter(40)}}---{{footCarIndex}}</span>
+                  <span>{{book.bookFullDescribe}}---{{footCarIndex}}</span>
                 </div>
-                <div>
+                <div class="book-button">
                   <el-button type="danger" size="small" round>
                     <router-link
                       :to="{ name: 'recreationBookInfo', query: {bookName: book.bookName}}"
@@ -141,7 +147,9 @@
             <div class="foot-concent">
               <div class="concent">
                 <div class="book-name left-name">{{buttomMiddle[0].bookName}}</div>
-                <div class="book-desc">{{buttomMiddle[0].bookFullDescribe|maxTextFillFilter(40)}}</div>
+                <div class="book-desc">
+                  <span>{{buttomMiddle[0].bookFullDescribe}}</span>
+                </div>
               </div>
               <div class="book-cover">
                 <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
@@ -150,7 +158,9 @@
             <div class="foot-concent right-concent">
               <div class="concent">
                 <div class="book-name right-name">{{buttomMiddle[1].bookName}}</div>
-                <div class="book-desc">{{buttomMiddle[1].bookFullDescribe|maxTextFillFilter(40)}}</div>
+                <div class="book-desc">
+                  <span>{{buttomMiddle[1].bookFullDescribe}}</span>
+                </div>
               </div>
               <div class="book-cover">123</div>
             </div>
@@ -377,7 +387,25 @@ export default {
           author: "6"
         }
       ],
-      footCarousel: [],
+      footCarousel: [
+        {
+          bookId: 177,
+          bookName: "至尊归元",
+          bookBigType: "101",
+          bookTypeName: "玄幻",
+          bookTag: null,
+          bookAuthor: "恋风",
+          bookCover: "至尊归元",
+          bookScore: 0.0,
+          bookSimpleDescribe: null,
+          bookFullDescribe:
+            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
+          bookStatus: "00",
+          bookFreeChapterNum: 0,
+          bookChapterPrice: null,
+          bookCheckStatus: null
+        }
+      ],
       buttomMiddle: [
         {
           bookId: 177,
@@ -690,8 +718,20 @@ svg {
 #main-middle-foot .top-show .right-concent .book-desc {
   font-size: 13px;
   height: 60px;
+  text-align: left;
   padding-left: 40px;
   font-family: PingFangSC-Regular, -apple-system, Simsun;
+}
+#main-middle-foot .top-show .right-concent .book-desc span {
+  min-height: 20px;
+  line-height: 20px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+#main-middle-foot .top-show .right-concent .book-button {
+  margin-top: 10px;
 }
 #main-middle-foot .middle-foot-foot {
   height: 126px;
@@ -717,6 +757,10 @@ svg {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.foot-message .message-concent .book-name :hover {
+  cursor: pointer;
+  color: red;
+}
 .foot-message .message-concent .book-zhui {
   height: 25px;
   color: #bf2c24;
@@ -730,9 +774,15 @@ svg {
   font-size: 12px;
 }
 .foot-message .message-concent .book-desc {
-  height: 50px;
+  height: 66px;
   font-size: 12px;
   padding-right: 17px;
+}
+.foot-message .message-concent .book-desc span {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 .middle-foot-foot .foot-concent {
   width: 45%;
@@ -772,6 +822,12 @@ svg {
 .middle-foot-foot .foot-concent .concent .book-desc {
   font-size: 12px;
   height: 70%;
+}
+.middle-foot-foot .foot-concent .concent .book-desc span {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 .right-name {
   color: #fc6c28;

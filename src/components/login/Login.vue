@@ -75,10 +75,17 @@
 import api from "../../api/index";
 import router from "../../router";
 export default {
+  created() {
+    var url = this.$route.query.redirect;
+    if (url != null && url.trim() != "") {
+      this.redirect = url;
+    }
+  },
   data() {
     return {
       loading: false,
       backMsg: "",
+      redirect: "/",
       ruleForm: {
         name: "",
         password: ""
@@ -111,10 +118,10 @@ export default {
                   type: "success"
                 });
                 //添加localstorge
-                localStorage.setItem("user",JSON.stringify(res.data[0]))
+                localStorage.setItem("user", JSON.stringify(res.data[0]));
                 localStorage.setItem("library-token", res.data[1]);
                 router.push({
-                  path: "/"
+                  path: this.redirect
                 });
               } else {
                 this.$message.error(res.errorMessage);
@@ -157,11 +164,10 @@ export default {
 a :hover {
   color: orange;
 }
-#other-login .icon{
+#other-login .icon {
   font-size: 30px;
 }
-#other-login span{
+#other-login span {
   margin-left: 20px;
 }
-
 </style>

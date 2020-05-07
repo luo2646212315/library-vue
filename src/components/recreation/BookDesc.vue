@@ -83,8 +83,8 @@ export default {
     msg: String
   },
   created() {
-    // var bookName = this.$route.query.bookName;
-    // this.getRecreationBookByName(bookName);
+    var bookName = this.$route.query.bookName;
+    this.getRecreationBookByName(bookName);
   },
   data() {
     return {

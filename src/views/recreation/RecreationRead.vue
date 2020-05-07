@@ -7,7 +7,7 @@
 
 <script>
 import HeaderFloat from "../../components/recreation/HeaderFloat";
-import Read from "../../components/recreation/Read"
+import Read from "../../components/recreation/Read";
 export default {
   name: "BookInfo",
   props: {

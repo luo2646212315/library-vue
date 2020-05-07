@@ -12,37 +12,35 @@
           <el-image style="width: 100%; height: 100%" src="../images/11.jpg" :fit="fit"></el-image>
         </div>
         <div class="right-desc">
-          <div class="book-name">马克思恩格斯社会建设理论及其对建设社adad会主义和谐社会的指导</div>
+          <div class="book-name">{{bookInfo.bookName}}</div>
           <div class="book-other">
             <div class="item">
               <div class="left-item">所属:</div>
-              <div class="right-item">中国</div>
+              <div class="right-item">{{bookInfo.authorCountry}}</div>
             </div>
             <div class="item">
               <div class="left-item">作者:</div>
-              <div class="right-item">马云</div>
+              <div class="right-item">{{bookInfo.bookAuthor}}</div>
             </div>
             <div class="item">
               <div class="left-item">关键词:</div>
-              <div class="right-item">长篇小说，戏剧</div>
+              <div class="right-item">{{bookInfo.bookKeyWords}}</div>
             </div>
             <div class="item">
-              <div class="left-item">介绍:</div>
-              <div
-                class="right-item"
-              >本书共7篇，内容包括心态篇—全面备战从此开始、生活篇—饮食起居要有规律、策略篇—高效的复习策略、方法篇—高效的复习方法、应试篇—全身而过的不败经典、休整篇—好好休息迎接未来。</div>
+              <div class="left-book-desc">介绍:</div>
+              <div class="right-book-desc">{{bookInfo.bookDesc}}</div>
             </div>
           </div>
         </div>
       </div>
       <div class="buttom-button">
         <el-row>
-          <el-button type="primary" @click="dialogVisible = true">立即借阅</el-button>
-          <el-button type="success">目录查看</el-button>
+          <el-button type="primary" @click="dialogLendVisible = true">立即借阅</el-button>
+          <el-button type="success" @click="dialogChapterVisible = true">目录查看</el-button>
         </el-row>
       </div>
-      <div>
-        <el-dialog title="图书借阅" :visible.sync="dialogVisible" width="30%">
+      <div id="standard-book">
+        <el-dialog title="图书借阅" :visible.sync="dialogLendVisible" width="30%">
           <div>
             <el-form
               :model="ruleForm"
@@ -52,7 +50,7 @@
               label-width="100px"
               class="demo-ruleForm"
             >
-              <el-form-item label="价格">
+              <el-form-item label="价格:">
                 <span>1.0金币 / 天</span>
                 <el-tooltip
                   class="item"
@@ -65,7 +63,7 @@
                   </svg>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="借阅至" prop="time" v-if="!autoReturn">
+              <el-form-item label="归还日期:" prop="time">
                 <el-date-picker
                   v-model="ruleForm.time"
                   align="right"
@@ -75,15 +73,22 @@
                 ></el-date-picker>
               </el-form-item>
 
-              <el-form-item v-model="totalMoney" label="合计">
+              <el-form-item v-model="totalMoney" label="合计:">
                 <span>{{totalMoney}}</span> 金币
               </el-form-item>
             </el-form>
           </div>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button @click="dialogLendVisible = false">取 消</el-button>
             <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
           </span>
+        </el-dialog>
+        <el-dialog title="书籍目录" :visible.sync="dialogChapterVisible">
+          <div id="chapter">
+            <div class="chapter-item" v-for="chapter in chapterList" :key="chapter.chapterNum">
+              <span class="chapter-name">{{chapter.chapterName}}</span>
+            </div>
+          </div>
         </el-dialog>
       </div>
     </div>
@@ -91,15 +96,30 @@
 </template>
 
 <script>
+import api from "../../api/index";
 export default {
   name: "bookDesc",
   props: {
     msg: String
   },
+  created() {
+    var bookName = this.$route.query.bookName;
+    this.getStandardBookByName(bookName);
+  },
   data() {
     return {
       fit: "fill",
-      dialogVisible: false,
+      dialogLendVisible: false,
+      dialogChapterVisible: false,
+      bookInfo: {},
+      chapterList: [
+        {
+          chapterNum: 1,
+          chapterNumber: "第一章",
+          chapterName: "叙",
+          chapterContent: null
+        }
+      ],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() < Date.now();
@@ -149,18 +169,31 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.dialogVisible = false;
+          this.dialogLendVisible = false;
           alert("submit!");
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+    getStandardBookByName(bookName) {
+      api.getStandardBookByName(bookName).then(res => {
+        this.bookInfo = res.data[0];
+      });
+    },
+    getStandardBookChapterByUrl(bookUrl) {
+      api.getStandardBookChapterByUrl(bookUrl).then(res => {
+        this.chapterList = res.data[0];
+      });
     }
   },
   watch: {
     "ruleForm.time": function() {
       this.settlement();
+    },
+    bookInfo: function() {
+      this.getStandardBookChapterByUrl(this.bookInfo.bookDefaultUrl);
     }
   }
 };
@@ -170,7 +203,6 @@ export default {
 <style>
 #bookDesc {
   height: 630px;
-
   width: 100%;
   background: #f7f6f2;
 }
@@ -183,7 +215,6 @@ export default {
 
 .bookDesc .top-nav {
   height: 50px;
-
   padding-top: 20px;
 }
 
@@ -205,10 +236,12 @@ export default {
   height: 450px;
   width: 620px;
   float: left;
+  background-color: white;
   /* border: 1px solid red; */
 }
 .right-desc .book-name {
   height: 60px;
+  line-height: 60px;
   font-size: 22px;
   font-weight: bold;
 }
@@ -241,6 +274,30 @@ export default {
   color: #000000;
   float: left;
 }
+.left-book-desc {
+  text-align: right;
+  width: 180px;
+  min-height: 25px;
+  line-height: 25px;
+  float: left;
+  font-size: small;
+  color: #099 !important;
+}
+.right-book-desc {
+  width: 380px;
+  text-align: left;
+  min-height: 25px;
+  line-height: 25px;
+  margin-left: 20px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  font-family: 宋体;
+  font-size: small;
+  color: #000000;
+  float: left;
+}
 .buttom-button {
   height: 100px;
   width: 900px;
@@ -252,5 +309,29 @@ export default {
 }
 .el-button--primary {
   margin-right: 170px;
+}
+#standard-book #chapter {
+  min-height: 100px;
+  max-height: 400px;
+  overflow: auto;
+}
+#standard-book #chapter .chapter-item {
+  width: 49%;
+  height: 40px;
+  line-height: 40px;
+  text-align: left;
+  float: left;
+  font-size: 15px;
+}
+#standard-book #chapter .chapter-item :hover {
+  cursor: pointer;
+  color: red;
+}
+#standard-book #chapter .chapter-item .chapter-name {
+  max-width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
