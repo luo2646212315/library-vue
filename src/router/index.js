@@ -29,7 +29,7 @@ const routes = [
   },
   {
 
-    path: '/recreation/read',
+    path: '/recreation/read/:bookName/:chapterNo',
     name: 'recreationRead',
     component: () => import("../views/recreation/RecreationRead")
 

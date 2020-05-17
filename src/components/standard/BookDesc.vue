@@ -322,6 +322,7 @@ export default {
   text-align: left;
   float: left;
   font-size: 15px;
+  border-bottom: 1px solid #efe0e0;
 }
 #standard-book #chapter .chapter-item :hover {
   cursor: pointer;

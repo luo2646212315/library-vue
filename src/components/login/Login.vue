@@ -87,8 +87,8 @@ export default {
       backMsg: "",
       redirect: "/",
       ruleForm: {
-        name: "",
-        password: ""
+        name: "傻子",
+        password: "123456"
       },
       rules: {
         name: [{ required: true, message: "请输入账号", trigger: "blur" }],
@@ -117,8 +117,10 @@ export default {
                   message: res.message,
                   type: "success"
                 });
+                //添加vuex
+                let userInfo = res.data[0];
+                this.$store.commit("update", userInfo);
                 //添加localstorge
-                localStorage.setItem("user", JSON.stringify(res.data[0]));
                 localStorage.setItem("library-token", res.data[1]);
                 router.push({
                   path: this.redirect

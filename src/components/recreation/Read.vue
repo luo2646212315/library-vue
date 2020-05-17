@@ -17,7 +17,7 @@
         </div>
         <div>设置</div>
       </div>
-      <div class="bar-item">
+      <div class="bar-item" v-show="!bookCheck" @click="addToBookshelf()">
         <div class="bar-icon">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-shujia_huaban" />
@@ -25,7 +25,10 @@
         </div>
         <div>书架</div>
       </div>
-      <div class="bar-item">
+      <div class="bar-item" v-show="bookCheck">
+        <div class="inBookshelf">已在书架</div>
+      </div>
+      <div class="bar-item" @click="back()">
         <div class="bar-icon">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-fanhuishuye" />
@@ -34,31 +37,86 @@
         <div>书页</div>
       </div>
     </div>
-    <div id="middle-c" :style="'width:'+width[3]">
-      <div class="crum"></div>
+    <div id="middle-c" :style="'width:'+width">
+      <div class="crum">
+        <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-top: 23px;">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ bookInfo.bookTypeName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ bookInfo.bookName}}</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
       <div class="concent" :class="chooseColor+'-color'">
-        <div class="title">{{chapter.chapterNumber}}：{{chapter.chapterName}}</div>
+        <el-badge :value="commentTotal" :max="99" class="item">
+          <div
+            class="title"
+            @dblclick="showComment()"
+          >{{chapter.chapterNumber}}：{{chapter.chapterName}}</div>
+        </el-badge>
         <div v-html="chapter.chapterContent" class="con" :style="'font-size:'+fontSize+'px'"></div>
       </div>
+
       <div class="buttom-page" :class="chooseColor+'-color'">
         <div>
-          <div
+          <router-link
+            tag="div"
             class="page"
             :class="(currentNum-1)<1?'no-choose':''"
             style="border-left: none;"
-            @click="prv()"
-          >上一章</div>
+            :to="{ name: 'recreationRead', params: {bookName:  bookInfo.bookName,chapterNo:currentNum-1}}"
+          >上一章</router-link>
         </div>
-        <div>
+        <div @click="back()">
           <div class="page">书籍详情</div>
         </div>
         <div>
-          <div class="page" :class="(currentNum+1)>totalNum?'no-choose':''" @click="next()">下一章</div>
+          <router-link
+            tag="div"
+            class="page"
+            :class="(currentNum+1)>totalNum?'no-choose':''"
+            @click="next()"
+            :to="{ name: 'recreationRead', params: {bookName: bookInfo.bookName,chapterNo:currentNum+1}}"
+          >下一章</router-link>
         </div>
       </div>
     </div>
-    <div id="mulu-con" v-show="visibleMenu"></div>
+    <div id="mulu-con" v-show="visibleMenu">
+      <el-row>
+        <el-button type="success" @click="change('-')">-</el-button>
+
+        <el-button type="success" @click="change('+')">+</el-button>
+      </el-row>
+    </div>
     <div id="shezhi-con" v-show="visibleShezhi"></div>
+    <el-drawer
+      style="padding:0 20px"
+      title=" "
+      :visible.sync="visibleCommened"
+      direction="rtl"
+      size="30%"
+    >
+      <div class="comment-input">
+        <el-input
+          type="textarea"
+          placeholder="请输入内容"
+          v-model="textarea"
+          maxlength="150"
+          resize="none"
+          :rows="4"
+          show-word-limit
+        ></el-input>
+        <div style="margin-top: 13px; padding: 0 15px;">
+          <el-button type="danger" plain @click="addNewBookComment()">发表</el-button>
+        </div>
+      </div>
+      <div class="count">共{{commentTotal}}条帖子</div>
+      <ul class="comment-list">
+        <li class="comment-item" v-for="comment in commentList" :key="comment.commentId">
+          <div class="user">{{comment.userId}}</div>
+          <div class="con">{{comment.comment}}</div>
+          <div class="option">5条回复</div>
+        </li>
+      </ul>
+    </el-drawer>
   </div>
 </template>
 
@@ -67,27 +125,51 @@ import api from "../../api/index";
 export default {
   name: "RecreationRead",
   created() {
-    // var bookName = this.$route.query.bookName;
-    this.getChapterCon("02", "lol之电竞天王.txt", this.currentNum);
+    this.width = this.widthBox[this.boxIndex];
+    var bookName = this.$route.params.bookName;
+    var chapterNo = this.$route.params.chapterNo;
+    this.currentNum = chapterNo;
+    this.getRecreationBookByName(bookName);
+    this.isInBookshelf(this.$userInfo.userId, "02", bookName);
+    this.getBookCommentList(bookName, "01", this.currentNum, 0);
   },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
-    this.concentLeft = document.querySelector("#middle-c").offsetLeft;
+    this.$router.afterEach(() => {
+      window.scrollTo(0, 0);
+    });
   },
   data() {
     return {
-      concentLeft: "",
       barTop: "",
-      bookName: "",
+      bookInfo: {},
+      bookCheck: false,
       chapter: {},
+      textarea: "",
+      commentList: [
+        {
+          bookName: "星辰变",
+          chapterNum: 18,
+          comment: "1231",
+          commentId: 1,
+          commentLevel: "01",
+          commentParentId: 0,
+          userId: 3
+        }
+      ],
+      commentTotal: 0,
+      chapterList: [],
       currentNum: 1,
-      totalNum: 3,
+      totalNum: 10,
       chooseColor: "first",
       fontSize: 12,
       fontFamily: "",
-      width: ["640px", "800px", "900px", "1280px"],
+      widthBox: ["640px", "800px", "900px", "1280px"],
+      boxIndex: 2,
+      width: "",
       visibleMenu: false,
-      visibleShezhi: false
+      visibleShezhi: false,
+      visibleCommened: false
     };
   },
   methods: {
@@ -97,8 +179,7 @@ export default {
         window.pageYOffset ||
         document.documentElement.scrollTop ||
         document.body.scrollTop;
-      var offsetTop = document.querySelector("#searchBar").offsetTop;
-      console.log(scrollTop + "----" + offsetTop + "-----" + this.concentLeft);
+      // var offsetTop = document.querySelector("#searchBar").offsetTop;
       if (scrollTop < 120) {
         var top = 120 - scrollTop;
         document.querySelector("#searchBar").style.top = top + "px";
@@ -133,25 +214,104 @@ export default {
     },
     getChapterCon(type, bookUrl, chapter) {
       api.getChapterCon(type, bookUrl, chapter).then(res => {
-        console.log(res);
         this.chapter = res.data[0];
       });
     },
-    pre() {
-      this.currentNum--;
-      this.getChapterCon("02", "lol之电竞天王.txt", this.currentNum);
+    async getRecreationBookByName(name) {
+      await api.getRecreationBookByName(name).then(res => {
+        this.bookInfo = res.data[0];
+      });
+      this.getRecreationBookChapterByUrl(this.bookInfo.bookDefaultUrl);
+      this.getChapterCon("02", this.bookInfo.bookDefaultUrl, this.currentNum);
+      //等待结果返回再异步请求
     },
-    next() {
-      this.currentNum++;
-      this.getChapterCon("02", "lol之电竞天王.txt", this.currentNum);
+    getRecreationBookChapterByUrl(bookUrl) {
+      api.getRecreationBookChapterByUrl(bookUrl).then(res => {
+        this.chapterList = res.data[0];
+      });
+    },
+    isInBookshelf(userId, bigType, bookName) {
+      api.isInBookshelf(userId, bigType, bookName).then(res => {
+        this.bookCheck = res.data[0];
+      });
+    },
+    addToBookshelf() {
+      var bookshelf = {
+        bookName: this.bookInfo.bookName,
+        bookBigType: "02",
+        bookType: this.bookInfo.bookType,
+        ownerUserId: this.$userInfo.userId,
+        chapterNum: this.currentNum,
+        chapterInfo: this.chapter.chapterNumber +" "+ this.chapter.chapterName,
+        bookReadTime: new Date()
+      };
+      api.addBookToBookshelf(bookshelf).then(res => {
+        if (res.data[0] === 1) {
+          this.bookCheck = true;
+        } else {
+          this.$message.error(res.message);
+        }
+      });
+    },
+    back() {
+      this.$router.push({
+        name: "recreationBookInfo",
+        query: { bookName: this.bookInfo.bookName }
+      });
+    },
+    change(val) {
+      switch (val) {
+        case "+":
+          var s = this.boxIndex + 1;
+          if (s <= this.widthBox.length - 1) {
+            this.boxIndex = s;
+          }
+          break;
+        case "-":
+          var s1 = this.boxIndex - 1;
+          if (s1 >= 0) {
+            this.boxIndex = s1;
+          }
+          break;
+      }
+      this.width = this.widthBox[this.boxIndex];
+    },
+    showComment() {
+      this.visibleCommened = true;
+    },
+    getBookCommentList(bookName, level, chapterNo, parentId) {
+      api.getBookCommentList(bookName, level, chapterNo, parentId).then(res => {
+        this.commentList = res.data[0];
+        this.commentTotal = this.commentList.length;
+        console.log(this.commentTotal);
+      });
+    },
+    addNewBookComment() {
+      var comment = {
+        userId: this.$userInfo.userId,
+        bookName: this.bookInfo.bookName,
+        chapterNum: this.currentNum,
+        comment: this.textarea,
+        commentLevel: "01"
+      };
+      api.addNewBookComment(comment).then(res => {
+        console.log(res);
+      });
     }
   },
   watch: {
-    concentLeft: function(val) {
-      console.log(val);
-      document.querySelector("#searchBar").style.left = val - 70 + "px";
-      document.querySelector("#mulu-con").style.left = val + "px";
-      document.querySelector("#shezhi-con").style.left = val + "px";
+    "$route.params.chapterNo": function(val) {
+      this.currentNum = val;
+      this.getChapterCon("02", this.bookInfo.bookDefaultUrl, val);
+    },
+    width: function() {
+      this.$nextTick(function() {
+        var concentLeft = document.querySelector("#middle-c").offsetLeft;
+        document.querySelector("#searchBar").style.left =
+          concentLeft - 70 + "px";
+        document.querySelector("#mulu-con").style.left = concentLeft + "px";
+        document.querySelector("#shezhi-con").style.left = concentLeft + "px";
+      });
     }
   },
   destroyed() {
@@ -208,6 +368,10 @@ export default {
   cursor: pointer;
   color: red;
 }
+#searchBar :hover .inBookshelf {
+  cursor: default;
+  color: #978e8e;
+}
 .left-bar .bar-item {
   color: #000;
   border-top: 1px solid #beb9b9;
@@ -261,6 +425,14 @@ export default {
   color: red;
   background-color: #e9e5e5;
 }
+.buttom-page :hover .no-choose {
+  cursor: default;
+}
+.inBookshelf {
+  height: 60px;
+  line-height: 60px;
+  color: #978e8e;
+}
 .buttom-page div {
   width: 33%;
   height: 100%;
@@ -287,6 +459,48 @@ export default {
 }
 #recreation-read #middle-c .con {
   text-align: left;
+  line-height: 30px;
+}
+#recreation-read .comment-input {
+  height: 150px;
+  border: 1px solid red;
+}
+#recreation-read .comment-list {
+  height: 500px;
+  overflow: auto;
+  border: 1px solid green;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#recreation-read .el-drawer__header {
+  padding: 10px 20px;
+}
+.comment-list .comment-item {
+  padding: 10px 0;
+  text-align: left;
+}
+#recreation-read .count {
+  height: 50px;
+  line-height: 50px;
+  text-align: left;
+  color: #b6b1b1;
+  font-size: 12px;
+}
+#recreation-read .el-drawer__header {
+  margin-bottom: 0;
+}
+.comment-item .user {
+  height: 40px;
+  line-height: 40px;
+}
+.comment-item .con {
+  min-height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+}
+.comment-item .option {
+  height: 30px;
   line-height: 30px;
 }
 </style>

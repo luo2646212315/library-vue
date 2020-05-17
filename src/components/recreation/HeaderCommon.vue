@@ -3,7 +3,7 @@
     <div class="top">
       <div class="middle-div">
         <div class="top-top">
-          <div class="user" v-show="!isLogin">
+          <div class="user" v-if="!isLogin">
             <span class="login">
               <router-link to="/loginRegisterForget/login" tag="span">登录</router-link>
             </span> |
@@ -12,11 +12,11 @@
             </span>
             <span></span>
           </div>
-          <div class="user" v-show="isLogin">
+          <div class="user" v-if="isLogin">
             <el-dropdown @command="handleCommand">
               <span class="el-dropdown-link white">
                 <i class="el-icon-s-custom"></i>
-                <span>{{$userInfo.userNickName}}</span>
+                <span>{{userInfo.userNickName}}</span>
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
@@ -27,7 +27,7 @@
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-          <div class="user" v-show="isAdmain">
+          <div class="user" v-show="isAdmin">
             <el-dropdown @command="handleCommand">
               <span class="el-dropdown-link white">
                 <span>管理员</span>
@@ -47,7 +47,7 @@
                 <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="/standardHome/wenxue">美文名著</el-dropdown-item>
+                <el-dropdown-item command="/standardHome/201">美文名著</el-dropdown-item>
                 <el-dropdown-item command="/recreationHome">休闲娱乐</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -66,7 +66,7 @@
             </div>
           </div>
           <div class="right">
-            <el-button style="  margin-top: 15px;" type="danger" plain>
+            <el-button @click="goShelf" style="  margin-top: 15px;" type="danger" plain>
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-shujia" />
               </svg> 我的书架
@@ -96,9 +96,7 @@ export default {
       src: require("../../assets/images/logo.png"),
       fit: "fill",
       selectType: "",
-      input: "",
-      isLogin: true,
-      isAdmain: true
+      input: ""
     };
   },
   methods: {
@@ -113,8 +111,7 @@ export default {
       }
       if (command === "/exit") {
         console.log(command);
-        this.isLogin = false;
-        return;
+        this.$loginOut(this.userInfo.userId);
       }
       this.$router.push({
         path: command
@@ -128,6 +125,22 @@ export default {
       // api.qqLogin().then(res => {
       //   console.log(res);
       // });
+    },
+    goShelf() {
+      this.$router.push({
+        path: "/user/bookshelf"
+      });
+    }
+  },
+  computed: {
+    isLogin() {
+      return this.$store.state.isLogin;
+    },
+    isAdmin() {
+      return this.$store.state.isAdmin;
+    },
+    userInfo() {
+      return this.$store.state.userInfo;
     }
   }
 };

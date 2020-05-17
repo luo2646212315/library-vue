@@ -37,17 +37,17 @@
           </svg>我的书架
         </el-menu-item>
 
-        <el-submenu style="float:right" index="/user" v-if="$isLogin">
+        <el-submenu style="float:right" index="/user" v-if="isLogin">
           <template slot="title">
             <i class="el-icon-s-custom"></i>
-            {{$userInfo.userNickName}}
+            {{userInfo.userNickName}}
           </template>
           <el-menu-item index="/user/message">消息</el-menu-item>
           <el-menu-item index="/user/userInfo">个人中心</el-menu-item>
           <el-menu-item index="/user/upload">书籍上传</el-menu-item>
           <el-menu-item index="/exit">退出</el-menu-item>
         </el-submenu>
-        <div class="loginReg" v-if="!$isLogin">
+        <div class="loginReg" v-if="!isLogin">
           <span class="login">
             <router-link to="/loginRegisterForget/login" tag="span">登录</router-link>
           </span> |
@@ -55,7 +55,7 @@
             <router-link to="/loginRegisterForget/register" tag="span">注册</router-link>
           </span>
         </div>
-        <el-submenu style="float:right" index="/admain" v-show="$isAdmin">
+        <el-submenu style="float:right" index="/admain" v-show="isAdmin">
           <template slot="title">管理员</template>
           <el-menu-item index="/userManager">用户管理</el-menu-item>
           <el-menu-item index="/bookManager">书籍管理</el-menu-item>
@@ -93,7 +93,6 @@ export default {
       fit: "fill",
       selectType: "",
       activeIndex: "/standardHome/201",
-      userInfo: "",
       input: "",
       bookTypes: []
     };
@@ -113,7 +112,7 @@ export default {
           path: key
         });
       } else {
-        this.$loginOut();
+        this.$loginOut(this.userInfo.userId);
       }
     },
     getBookTypes(bigType) {
@@ -130,6 +129,17 @@ export default {
         //深度监听，同时也可监听到param参数变化
       },
       deep: true
+    }
+  },
+  computed:{
+    isLogin(){
+      return this.$store.state.isLogin;
+    },
+    isAdmin(){
+      return this.$store.state.isAdmin;
+    },
+    userInfo(){
+      return this.$store.state.userInfo;
     }
   }
 };

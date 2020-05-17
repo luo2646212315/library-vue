@@ -67,7 +67,17 @@
             <div class="first"></div>
           </el-tab-pane>
           <el-tab-pane label="目录(1202章)" name="second">
-            <div></div>
+            <ul class="chapter-tab">
+              <li v-for="chapter in chapterList" :key="chapter.chapterNum">
+                <div class="chapter-item">
+                  <router-link
+                    tag="a"
+                    :title="chapter.chapterNumber+'：'+chapter.chapterName"
+                    :to="{ name: 'recreationRead', params: {bookName: bookInfo.bookName,chapterNo:chapter.chapterNum}}"
+                  >{{chapter.chapterNumber}}：{{chapter.chapterName}}</router-link>
+                </div>
+              </li>
+            </ul>
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -107,13 +117,28 @@ export default {
         bookFreeChapterNum: 0,
         bookChapterPrice: null,
         bookCheckStatus: null
-      }
+      },
+      chapterList: [
+        {
+          chapterNum: 1,
+          chapterNumber: "第一章",
+          chapterName: "叙",
+          chapterContent: null
+        }
+      ]
     };
   },
   methods: {
-    getRecreationBookByName(name) {
-      api.getRecreationBookByName(name).then(res => {
+    async getRecreationBookByName(name) {
+      await api.getRecreationBookByName(name).then(res => {
         this.bookInfo = res.data[0];
+      });
+      //等待结果返回再异步请求
+      this.getRecreationBookChapterByUrl(this.bookInfo.bookDefaultUrl);
+    },
+    getRecreationBookChapterByUrl(bookUrl) {
+      api.getRecreationBookChapterByUrl(bookUrl).then(res => {
+        this.chapterList = res.data[0];
       });
     }
   }
@@ -289,5 +314,31 @@ img:hover {
   width: 100%;
   height: 100%;
   border: 1px solid olivedrab;
+}
+#bookDesc .buttom-concent .chapter-tab {
+  min-height: 500px;
+  border: 1px solid olivedrab;
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+#bookDesc .buttom-concent .chapter-tab li {
+  float: left;
+  width: 33.3%;
+  border-bottom: 1px solid #d8dfd8;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  text-align: left;
+  font-family: PingFangSC-Regular, -apple-system, Simsun;
+}
+#bookDesc .buttom-concent .chapter-tab li .chapter-item {
+  overflow: hidden;
+  max-width: 80%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#bookDesc .buttom-concent .chapter-tab li .chapter-item a:hover{
+  color: red;
 }
 </style>

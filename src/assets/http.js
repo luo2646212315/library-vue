@@ -12,7 +12,6 @@ const toLogin = () => {
 const handel = (res) => {
     var code = res.data.code;
     var message = res.data.message;
-    console.log(router.currentRoute)
     switch (code) {
         case 401:
             //去登陆

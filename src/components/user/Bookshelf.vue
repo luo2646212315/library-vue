@@ -13,7 +13,6 @@
           <el-menu-item-group>
             <template slot="title">名著专区</template>
             <el-menu-item index="01">美文名著</el-menu-item>
-            <el-menu-item index="11">自动借阅</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group>
             <template slot="title">娱乐专区</template>
@@ -41,7 +40,7 @@
             </div>
             <el-table
               ref="multipleTable1"
-              :data="meiwenData"
+              :data="meiwenData.list"
               tooltip-effect="dark"
               style="width: 100%"
             >
@@ -68,7 +67,7 @@
               <div class="block">
                 <el-pagination
                   @current-change="handleCurrentChange1"
-                  :current-page.sync="currentPage1"
+                  :current-page.sync="meiwenCurrentPage"
                   :page-size="5"
                   layout="total,prev, pager, next, jumper"
                   :total="20"
@@ -95,7 +94,7 @@
             </div>
             <el-table
               ref="multipleTable2"
-              :data="yuleData"
+              :data="yuleData.list"
               tooltip-effect="dark"
               style="width: 100%"
               @selection-change="handleSelectionChange"
@@ -104,19 +103,19 @@
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column label="书籍" width="150" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span class="type-zi">「{{ scope.row.type }}」</span>
+                  <span class="type-zi">「{{ scope.row.bookTypeName }}」</span>
                   <span class="name-zi">{{ scope.row.bookName }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="作者" width="120" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.bookAuthoor }}</template>
+                <template slot-scope="scope">{{ scope.row.bookAuthor }}</template>
               </el-table-column>
               <el-table-column label="阅读进度" width="150" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span>{{ scope.row.schedule }}</span>
+                  <span>{{ scope.row.chapterInfo }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="lastReadTime" label="最近阅读时间" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="bookReadTime" label="最近阅读时间" show-overflow-tooltip></el-table-column>
               <el-table-column label="操作" show-overflow-tooltip>
                 <template>
                   <span></span>
@@ -133,8 +132,8 @@
             <div class="page">
               <div class="block">
                 <el-pagination
-                  @current-change="handleCurrentChange1"
-                  :current-page.sync="currentPage1"
+                  @current-change="handleCurrentChange2"
+                  :current-page.sync="yuleCurrentPage"
                   :page-size="5"
                   layout="total,prev, pager, next, jumper"
                   :total="20"
@@ -149,9 +148,21 @@
 </template>
 
 <script>
+import api from "../../api";
 export default {
   name: "Bookshelf",
-  created() {},
+  created() {
+    this.getUserStandardBookShelf(
+      this.$store.state.userInfo.userId,
+      this.meiwenCurrentPage,
+      10
+    );
+    this.getUserRecreationBookshelf(
+this.$store.state.userInfo.userId,
+      this.yuleCurrentPage,
+      10
+    );
+  },
   props: {
     msg: String
   },
@@ -161,49 +172,15 @@ export default {
       type: "01",
       searchInput: "",
       leftBar: "01",
-      currentPage1: 1,
-      currentPage2: 1,
+      yuleCurrentPage: 1,
+      meiwenCurrentPage: 1,
       currentPage3: 1,
       currentPage4: 1,
       checked: "",
       meiwenChecked: "",
-      meiwenData: [
-        {
-          bookName: "三国演义",
-          bookBigType: "美文名著",
-          bookCountry: "中国",
-          bookAuthoor: "罗贯中",
-          type: "历史",
-          schedule: "第一百三十八章第一百三十八章第一百三十八章",
-          lastReadTime: "2010-12-25"
-        }
-      ],
-      yuleData: [
-        {
-          bookName: "大主宰",
-          bookBigType: "休闲娱乐",
-          bookAuthoor: "我吃西红柿",
-          type: "玄幻",
-          schedule: "第一百三十八章",
-          lastReadTime: "2010-12-25"
-        },
-        {
-          bookName: "大主宰",
-          bookBigType: "休闲娱乐",
-          bookAuthoor: "我吃西红柿",
-          type: "玄幻",
-          schedule: "第一百三十八章",
-          lastReadTime: "2010-12-25"
-        },
-        {
-          bookName: "大主宰",
-          bookBigType: "休闲娱乐",
-          bookAuthoor: "我吃西红柿",
-          type: "玄幻",
-          schedule: "第一百三十八章",
-          lastReadTime: "2010-12-25"
-        }
-      ],
+      meiwenData: {},
+      yuleData: {},
+      autoData: [],
       multipleSelection: []
     };
   },
@@ -236,6 +213,18 @@ export default {
       } else {
         this.$refs.multipleTable2.toggleAllSelection();
       }
+    },
+    getUserRecreationBookshelf(userId, pageNo, pageSize) {
+      api.getUserRecreationBookshelf(userId, pageNo, pageSize).then(res => {
+        this.yuleData = res.data[0];
+        // console.log(res);
+      });
+    },
+    getUserStandardBookShelf(userId, pageNo, pageSize) {
+      api.getUserStandardBookShelf(userId, pageNo, pageSize).then(res => {
+        this.meiwenData = res.data[0];
+        // console.log(res);
+      });
     }
   },
   watch: {

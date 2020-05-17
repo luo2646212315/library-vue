@@ -145,7 +145,7 @@
           </div>
           <div class="middle-foot-foot">
             <div class="foot-concent">
-              <div class="concent">
+              <div class="concent" v-if="buttomMiddle[0]!==undefined">
                 <div class="book-name left-name">{{buttomMiddle[0].bookName}}</div>
                 <div class="book-desc">
                   <span>{{buttomMiddle[0].bookFullDescribe}}</span>
@@ -155,7 +155,7 @@
                 <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
               </div>
             </div>
-            <div class="foot-concent right-concent">
+            <div class="foot-concent right-concent" v-if="buttomMiddle[1]!==undefined"> 
               <div class="concent">
                 <div class="book-name right-name">{{buttomMiddle[1].bookName}}</div>
                 <div class="book-desc">

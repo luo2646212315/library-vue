@@ -6,7 +6,7 @@
           :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
-          @select="handleSelect"
+          @select="handleSelect1"
           background-color="#545c64"
           text-color="#fff"
           active-text-color="#ffd04b"
@@ -15,7 +15,7 @@
             <template slot="title">
               <el-image style="width:60px; height:60px" :src="src" :fit="fit"></el-image>
             </template>
-            <el-menu-item index="/standardHome/wenxue">文学专区</el-menu-item>
+            <el-menu-item index="/standardHome/201">文学专区</el-menu-item>
             <el-menu-item index="/recreationHome">娱乐专区</el-menu-item>
           </el-submenu>
         </el-menu>
@@ -46,11 +46,12 @@
           </el-menu-item>
           <el-submenu style="float:right" index="/user">
             <template slot="title">
-              <i class="el-icon-s-custom"></i> {{$userInfo.userNickName}}
+              <i class="el-icon-s-custom"></i>
+              {{userInfo.userNickName}}
             </template>
             <el-menu-item index="/exit">退出</el-menu-item>
           </el-submenu>
-          <el-submenu index="/admain" style="float:right" v-show="$isAdmin">
+          <el-submenu index="/admain" style="float:right" v-show="isAdmin">
             <template slot="title">管理员</template>
             <el-menu-item index="/userManager">用户管理</el-menu-item>
             <el-menu-item index="/bookManager">书籍管理</el-menu-item>
@@ -79,23 +80,39 @@ export default {
   },
   methods: {
     handleSelect(key) {
+      console.log(key);
       var nowUrl = this.$route.path;
       if (nowUrl === key) {
         location.reload();
         return;
       }
       if (key != "/exit") {
+        this.activeIndex = key;
         this.$router.push({
           path: key
         });
       } else {
-        this.$loginOut();
+        // console.log(this.userInfo);
+        this.$loginOut(this.userInfo.userId);
       }
+    },
+    handleSelect1(key) {
+      this.$router.push({
+        path: key
+      });
     }
   },
   watch: {
     activeIndex: function() {
       this.$emit("getSelect", this.activeIndex);
+    }
+  },
+  computed: {
+    isAdmin() {
+      return this.$store.state.isAdmin;
+    },
+    userInfo() {
+      return this.$store.state.userInfo;
     }
   }
 };
