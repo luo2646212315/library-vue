@@ -555,7 +555,7 @@ export default {
   width: 100%;
   height: 100%;
   margin: auto;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 #uploadManager .uploadManager-middle .left {
   width: 205px;
@@ -571,11 +571,14 @@ export default {
   height: 100%;
   float: left;
   margin-left: 30px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 #uploadManager .uploadManager-middle .page {
   height: 60px;
   padding-top: 25px;
   /* border: 1px solid red; */
+}
+.el-select {
+  width: 90px;
 }
 </style>

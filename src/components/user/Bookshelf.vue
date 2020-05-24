@@ -35,7 +35,7 @@
               <span style="font-size:18px; font-weight:blod">美文名著</span>
               <span style="color: #7f7f7f;margin-left: 15px;font-size: 14px;">
                 共
-                <span style="color:black">3</span>本书籍
+                <span style="color:black">{{meiwenData.total}}</span>本书籍
               </span>
             </div>
             <el-table
@@ -86,9 +86,9 @@
                 <el-pagination
                   @current-change="handleCurrentChange1"
                   :current-page.sync="meiwenCurrentPage"
-                  :page-size="5"
+                  :page-size="pageSize"
                   layout="total,prev, pager, next, jumper"
-                  :total="20"
+                  :total="meiwenData.total"
                 ></el-pagination>
               </div>
             </div>
@@ -107,7 +107,7 @@
               <span style="font-size:18px; font-weight:blod">休闲娱乐</span>
               <span style="color: #7f7f7f;margin-left: 15px;font-size: 14px;">
                 共
-                <span style="color:black">3</span>本书籍
+                <span style="color:black">{{yuleData.total}}</span>本书籍
               </span>
             </div>
             <el-table
@@ -117,7 +117,6 @@
               style="width: 100%"
               @selection-change="handleSelectionChange"
             >
-              >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column label="书籍" show-overflow-tooltip>
                 <template slot-scope="scope">
@@ -160,9 +159,9 @@
                 <el-pagination
                   @current-change="handleCurrentChange2"
                   :current-page.sync="yuleCurrentPage"
-                  :page-size="5"
+                  :page-size="pageSize"
                   layout="total,prev, pager, next, jumper"
-                  :total="20"
+                  :total="yuleData.total"
                 ></el-pagination>
               </div>
             </div>
@@ -202,6 +201,7 @@ export default {
       meiwenCurrentPage: 1,
       currentPage3: 1,
       currentPage4: 1,
+      pageSize: 10,
       checked: false,
       meiwenChecked: "",
       meiwenData: {},
@@ -217,9 +217,21 @@ export default {
     },
     handleCurrentChange1(val) {
       console.log(`当前页: ${val}`);
+      //美文
+      this.getUserStandardBookShelf(
+        this.$store.state.userInfo.userId,
+        this.meiwenCurrentPage,
+        10
+      );
     },
     handleCurrentChange2(val) {
       console.log(`当前页: ${val}`);
+      //娱乐
+      this.getUserRecreationBookshelf(
+        this.$store.state.userInfo.userId,
+        this.yuleCurrentPage,
+        10
+      );
     },
     handleCurrentChange3(val) {
       console.log(`当前页: ${val}`);
@@ -247,7 +259,7 @@ export default {
     },
     getUserStandardBookShelf(userId, pageNo, pageSize) {
       api.getUserStandardBookShelf(userId, pageNo, pageSize).then(res => {
-        console.log(res);
+        // console.log(res);
         this.meiwenData = res.data[0];
         // console.log(res);
       });
@@ -345,7 +357,6 @@ export default {
   height: 800px;
   margin: auto;
   background: #f7f6f2;
-  border: 1px solid red;
 }
 
 #bookShelf .middle {
@@ -372,7 +383,6 @@ export default {
 #bookShelf .right .search {
   height: 90px;
   width: 100%;
-  border: 1px solid red;
 }
 .right .search .search-div {
   width: 50%;
@@ -404,12 +414,12 @@ export default {
 .concent .option {
   width: 100%;
   height: 60px;
-  border: 1px solid red;
+
 }
 .concent .page {
   height: 60px;
   padding-top: 25px;
-  border: 1px solid red;
+
 }
 .select-option {
   height: 60px;

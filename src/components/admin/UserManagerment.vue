@@ -205,13 +205,13 @@ export default {
   margin: auto;
   height: 100%;
   margin: auto;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 
 #user-manager .user-manager-middle .search {
   height: 90px;
   width: 100%;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 #user-manager .search .search-div {
   width: 50%;
@@ -228,5 +228,8 @@ export default {
 }
 .el-form--inline .el-form-item {
   margin-right: 20px;
+}
+.el-select {
+  width: 90px;
 }
 </style>

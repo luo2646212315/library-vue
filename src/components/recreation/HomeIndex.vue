@@ -5,7 +5,7 @@
         <div class="type">
           <div class="ul-ul">
             <div
-              @click="kk(bookType.typeUrl)"
+              @click="searchType(bookType.typeFlag)"
               class="ul-item"
               :class="index%4==0||index%4==1 ? 'choose' : ''"
               v-for="(bookType,index) in bookTypes"
@@ -284,9 +284,6 @@ export default {
     footCarouselChange() {
       this.footCarIndex = this.$refs.footcar.activeIndex;
     },
-    kk() {
-      this.$message.error("qeqeqeqe");
-    },
     getBookType(bigType) {
       var _this = this;
       api.getBookType(bigType).then(res => {
@@ -306,6 +303,18 @@ export default {
         this.myMiddleFootCarousel = book.slice(23, 29);
         console.log("========================");
         console.log(this.webRec);
+      });
+    },
+    searchType(type) {
+      console.log(this.bookTypes);
+      this.$router.push({
+        name: "recreationSearch",
+        query: {
+          input: ""
+        },
+        params: {
+          type: type
+        }
       });
     }
   },

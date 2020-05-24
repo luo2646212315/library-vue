@@ -604,4 +604,7 @@ export default {
   padding-top: 25px;
   /* border: 1px solid red; */
 }
+.el-select {
+  width: 90px;
+}
 </style>

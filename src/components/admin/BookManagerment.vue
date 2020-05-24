@@ -122,7 +122,12 @@
                 <el-input v-model="search2.bookAuthor" clearable placeholder="请输入书籍作者"></el-input>
               </el-form-item>
               <el-form-item label="类型:">
-                <el-select v-model="search2.bookType" clearable placeholder="全部">
+                <el-select
+                  v-model="search2.bookType"
+                  clearable
+                  placeholder="全部"
+                  class="selectWidth"
+                >
                   <el-option label="全部" value></el-option>
                   <el-option
                     v-for="item in recreationType"
@@ -455,5 +460,8 @@ export default {
 }
 #book-manager .book-manager-middle .left ul {
   margin-top: 90px;
+}
+.el-select {
+  width: 90px;
 }
 </style>
