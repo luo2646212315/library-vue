@@ -57,8 +57,9 @@
         </div>
         <el-submenu style="float:right" index="/admain" v-show="isAdmin">
           <template slot="title">管理员</template>
-          <el-menu-item index="/userManager">用户管理</el-menu-item>
-          <el-menu-item index="/bookManager">书籍管理</el-menu-item>
+          <el-menu-item index="/admin/userManagerment">用户管理</el-menu-item>
+          <el-menu-item index="/admin/bookManagerment">书籍管理</el-menu-item>
+          <el-menu-item index="/admin/uploadManagerment">上传管理</el-menu-item>
         </el-submenu>
       </el-menu>
     </div>

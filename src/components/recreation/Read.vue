@@ -345,7 +345,7 @@ export default {
         bookName: this.bookInfo.bookName,
         bookBigType: "02",
         bookAuthor: this.bookInfo.bookAuthor,
-        bookType: this.bookInfo.bookType,
+        bookType: this.bookInfo.bookBigType,
         ownerUserId: this.$store.state.userInfo.userId,
         chapterNum: this.currentNum,
         chapterInfo:

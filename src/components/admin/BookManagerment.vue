@@ -51,8 +51,8 @@
               <el-form-item label="上架:">
                 <el-select v-model="search1.bookCheckStatus" clearable placeholder="全部">
                   <el-option label="全部" value></el-option>
-                  <el-option label="是" value="01"></el-option>
-                  <el-option label="否" value="11"></el-option>
+                  <el-option label="是" value="11"></el-option>
+                  <el-option label="否" value="00"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>
@@ -140,8 +140,8 @@
               <el-form-item label="上架:">
                 <el-select v-model="search2.bookCheckStatus" clearable placeholder="全部">
                   <el-option label="全部" value></el-option>
-                  <el-option label="是" value="01"></el-option>
-                  <el-option label="否" value="11"></el-option>
+                  <el-option label="是" value="11"></el-option>
+                  <el-option label="否" value="00"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>

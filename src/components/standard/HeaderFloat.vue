@@ -21,14 +21,14 @@
 
       <el-menu-item
         :index="'/standardHome/'+bookType.typeFlag"
-        v-for="bookType in bookTypes.slice(0,4)"
+        v-for="bookType in bookTypes.slice(0,3)"
         :key="bookType.typeId"
       >{{bookType.typeName}}</el-menu-item>
-      <el-submenu index="/more" v-show="bookTypes.slice(4).length>0">
+      <el-submenu index="/more" v-show="bookTypes.slice(3).length>0">
         <template slot="title">更多</template>
         <el-menu-item
           :index="'/standardHome/'+bookType.typeFlag"
-          v-for="bookType in bookTypes.slice(4)"
+          v-for="bookType in bookTypes.slice(3)"
           :key="bookType.typeId"
         >{{bookType.typeName}}</el-menu-item>
       </el-submenu>
@@ -57,12 +57,13 @@
       </div>
       <el-submenu style="float:right" index="/admain" v-show="isAdmin">
         <template slot="title">管理员</template>
-        <el-menu-item index="/userManager">用户管理</el-menu-item>
-        <el-menu-item index="/bookManager">书籍管理</el-menu-item>
+        <el-menu-item index="/admin/userManagerment">用户管理</el-menu-item>
+        <el-menu-item index="/admin/bookManagerment">书籍管理</el-menu-item>
+        <el-menu-item index="/admin/uploadManagerment">上传管理</el-menu-item>
       </el-submenu>
       <div style="float:right; margin-top: 10px;margin-right: 20px;" index="/search">
         <el-input placeholder="请输入作者、小说名" v-model="input" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+          <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
       </div>
     </el-menu>

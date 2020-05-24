@@ -34,8 +34,9 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="/userManager">用户管理</el-dropdown-item>
-                <el-dropdown-item command="/bookManager">书籍管理</el-dropdown-item>
+                <el-dropdown-item command="/admin/userManagerment">用户管理</el-dropdown-item>
+                <el-dropdown-item command="/admin/bookManagerment">书籍管理</el-dropdown-item>
+                <el-dropdown-item command="/admin/uploadManagerment">上传管理</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
