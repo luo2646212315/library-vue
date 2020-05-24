@@ -3,16 +3,18 @@
     <div class="top-image">
       <div class="crumbs">
         <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>玄幻</el-breadcrumb-item>
-          <el-breadcrumb-item>斗罗大陆</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/recreationHome' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item
+            :to="{ name: 'recreationSearch', query: { input: ''},params: {type: bookInfo.bookBigType}}"
+          >{{bookInfo.bookTypeName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{bookInfo.bookName}}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
     </div>
     <div class="middle">
       <div class="top-book">
-        <div class="book-cover">
-          <el-image src="images/11.jpg" :fit="fit"></el-image>
+        <div class="book-cover" v-if="bookInfo.bookCover!==undefined">
+          <el-image :src="$imagePath+'02/'+bookInfo.bookCover" :fit="fit"></el-image>
         </div>
         <div class="book-info">
           <div class="book-name">{{bookInfo.bookName}}</div>
@@ -31,7 +33,7 @@
             <span>{{bookInfo.bookStatus|transFromBookStateFilter}}</span>
           </div>
           <div class="book-simple-desc">
-            <span class="zi">{{bookInfo.bookFullDescribe|maxTextFillFilter(100)}}</span>
+            <span class="zi">{{bookInfo.bookFullDescribe}}</span>
           </div>
           <div class="book-num">
             <span class="arg">{{50025|transFromNumStateFilter}}</span>字
@@ -42,8 +44,18 @@
           </div>
           <div class="book-button">
             <el-row>
-              <el-button size="medium" type="danger">免费试读</el-button>
-              <el-button size="medium" type="primary" plain>加入书架</el-button>
+              <el-button
+                size="medium"
+                type="danger"
+                @click="read(chapterNo)"
+              >{{bookCheck?'继续阅读':'免费试读'}}</el-button>
+              <el-button
+                size="medium"
+                type="primary"
+                plain
+                @click="addInShelf"
+                :disabled="bookCheck"
+              >{{bookCheck?'已在书架':'加入书架'}}</el-button>
               <el-button size="medium" type="info" plain>投票互动</el-button>
             </el-row>
           </div>
@@ -70,11 +82,10 @@
             <ul class="chapter-tab">
               <li v-for="chapter in chapterList" :key="chapter.chapterNum">
                 <div class="chapter-item">
-                  <router-link
-                    tag="a"
+                  <a
                     :title="chapter.chapterNumber+'：'+chapter.chapterName"
-                    :to="{ name: 'recreationRead', params: {bookName: bookInfo.bookName,chapterNo:chapter.chapterNum}}"
-                  >{{chapter.chapterNumber}}：{{chapter.chapterName}}</router-link>
+                    @click="read(chapter.chapterNum)"
+                  >{{chapter.chapterNumber}}：{{chapter.chapterName}}</a>
                 </div>
               </li>
             </ul>
@@ -100,24 +111,10 @@ export default {
     return {
       fit: "fill",
       value: 2,
+      bookCheck: false,
+      chapterNo: 1,
       scoreColors: ["#99A9BF", "#F7BA2A", "#FF9900"],
-      bookInfo: {
-        bookId: 177,
-        bookName: "至尊归元",
-        bookBigType: "101",
-        bookTypeName: "玄幻",
-        bookTag: null,
-        bookAuthor: "恋风",
-        bookCover: "至尊归元",
-        bookScore: 0.0,
-        bookSimpleDescribe: null,
-        bookFullDescribe:
-          "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-        bookStatus: "00",
-        bookFreeChapterNum: 0,
-        bookChapterPrice: null,
-        bookCheckStatus: null
-      },
+      bookInfo: {},
       chapterList: [
         {
           chapterNum: 1,
@@ -134,11 +131,57 @@ export default {
         this.bookInfo = res.data[0];
       });
       //等待结果返回再异步请求
+      if (this.$store.state.isLogin) {
+        this.$isInBookshelf(
+          this.$store.state.userInfo.userId,
+          "02",
+          this.bookInfo.bookName
+        ).then(res => {
+          console.log(res);
+          this.bookCheck = res.data[0];
+          if (this.bookCheck) {
+            this.chapterNo = res.data[1].chapterNum;
+          }
+        });
+      }
       this.getRecreationBookChapterByUrl(this.bookInfo.bookDefaultUrl);
     },
     getRecreationBookChapterByUrl(bookUrl) {
       api.getRecreationBookChapterByUrl(bookUrl).then(res => {
         this.chapterList = res.data[0];
+      });
+    },
+    async addInShelf() {
+      let flag = false;
+      await this.$loginCheck().then(res => {
+        flag = res.status;
+      });
+      if (!flag) {
+        return;
+      }
+      var bookshelf = {
+        bookName: this.bookInfo.bookName,
+        bookBigType: "02",
+        bookAuthor: this.bookInfo.bookAuthor,
+        bookType: this.bookInfo.bookBigType,
+        ownerUserId: this.$store.state.userInfo.userId,
+        bookReadTime: new Date()
+      };
+      this.$addBookInShelf(bookshelf).then(r => {
+        this.bookCheck = r;
+      });
+    },
+    async read(chapterNo) {
+      let flag = false;
+      await this.$loginCheck().then(res => {
+        flag = res.status;
+      });
+      if (!flag) {
+        return;
+      }
+      this.$router.push({
+        name: "recreationRead",
+        params: { bookName: this.bookInfo.bookName, chapterNo: chapterNo }
       });
     }
   }
@@ -146,7 +189,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #bookDesc {
   height: 1000px;
   width: 100%;
@@ -260,6 +303,11 @@ export default {
 .book-info .book-simple-desc .zi {
   font-family: PingFangSC-Regular, -apple-system, Simsun;
   font-size: 14px;
+  line-height: 25px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .book-info .book-num {
   width: 100%;
@@ -338,7 +386,7 @@ img:hover {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-#bookDesc .buttom-concent .chapter-tab li .chapter-item a:hover{
+#bookDesc .buttom-concent .chapter-tab li .chapter-item a:hover {
   color: red;
 }
 </style>

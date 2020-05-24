@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      command: ""
+      command: "userInfo"
     };
   },
   methods: {

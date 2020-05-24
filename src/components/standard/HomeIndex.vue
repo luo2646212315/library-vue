@@ -33,8 +33,8 @@
             :key="book.bookId"
             @click="jumpBookInfo(book.bookName)"
           >
-            <div class="book-cover">
-              <el-image style="width: 100%; height: 100%" src="../images/11.jpg" :fit="fit"></el-image>
+            <div class="book-cover" v-if="book.bookCover!==undefined">
+              <el-image style="width: 100%; height: 100%" :src="$imagePath+'01/'+book.bookCover" :fit="fit"></el-image>
             </div>
             <div class="book-name">{{book.bookName}}</div>
             <div class="book-author">作者: {{book.authorCountry}}·{{book.bookAuthor}}</div>
@@ -139,7 +139,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #homeIndex {
   height: 1300px;
   width: 100%;

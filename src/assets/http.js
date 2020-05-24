@@ -1,6 +1,5 @@
 import axios from 'axios'
 import router from "../router"
-
 //跳转登录页面
 const toLogin = () => {
     router.replace({
@@ -15,7 +14,6 @@ const handel = (res) => {
     switch (code) {
         case 401:
             //去登陆
-            toLogin();
             console.log("认证失败");
             break;
         case 402:

@@ -60,18 +60,13 @@
           <div class="top-carousel">
             <div class="block">
               <el-carousel ref="topcar" :interval="3000" height="100%">
-                <el-carousel-item>
-                  <!-- <img src="http://localhost:9010/api/library-core/getImage/111.jpg"> -->
-                  <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
-                </el-carousel-item>
-                <el-carousel-item>
-                  <!-- <img src="http://localhost:9010/api/library-core/getImage/222.png"> -->
-                </el-carousel-item>
-                <el-carousel-item>
-                  <h3 class="small">3</h3>
-                </el-carousel-item>
-                <el-carousel-item>
-                  <h3 class="small">4</h3>
+                <el-carousel-item v-for="item in myMiddleTopCarousel" :key="item.bookId">
+                  <el-image
+                    v-if="item.bookCover!==undefined"
+                    style="width: 100%; height: 100%"
+                    :src="$imagePath+'02/'+item.bookCover"
+                    fit="contain"
+                  ></el-image>
                 </el-carousel-item>
               </el-carousel>
             </div>
@@ -113,8 +108,13 @@
                 type="card"
                 height="125px"
               >
-                <el-carousel-item v-for="item in 6" :key="item">
-                  <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
+                <el-carousel-item v-for="item in myMiddleFootCarousel" :key="item.bookId">
+                  <el-image
+                    v-if="item.bookCover!==undefined"
+                    style="width: 100%; height: 100%"
+                    :src="$imagePath+'02/'+item.bookCover"
+                    :fit="fit"
+                  ></el-image>
                 </el-carousel-item>
               </el-carousel>
             </div>
@@ -131,7 +131,7 @@
                   >{{book.bookName}}</router-link>
                 </div>
                 <div class="book-desc">
-                  <span>{{book.bookFullDescribe}}---{{footCarIndex}}</span>
+                  <span>{{book.bookFullDescribe}}</span>
                 </div>
                 <div class="book-button">
                   <el-button type="danger" size="small" round>
@@ -144,26 +144,47 @@
             </div>
           </div>
           <div class="middle-foot-foot">
-            <div class="foot-concent">
-              <div class="concent" v-if="buttomMiddle[0]!==undefined">
+            <!-- <div class="foot-concent" v-if="buttomMiddle[0]!==undefined"> -->
+            <router-link
+              v-if="buttomMiddle[0]!==undefined"
+              tag="div"
+              class="foot-concent"
+              :to="{ name: 'recreationBookInfo', query: {bookName: buttomMiddle[0].bookName}}"
+            >
+              <div class="concent">
                 <div class="book-name left-name">{{buttomMiddle[0].bookName}}</div>
                 <div class="book-desc">
                   <span>{{buttomMiddle[0].bookFullDescribe}}</span>
                 </div>
               </div>
               <div class="book-cover">
-                <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
+                <el-image
+                  style="width: 100%; height: 100%"
+                  :src="$imagePath+'02/'+buttomMiddle[0].bookCover"
+                  :fit="fit"
+                ></el-image>
               </div>
-            </div>
-            <div class="foot-concent right-concent" v-if="buttomMiddle[1]!==undefined"> 
+            </router-link>
+            <router-link
+              v-if="buttomMiddle[1]!==undefined"
+              tag="div"
+              class="foot-concent right-concent"
+              :to="{ name: 'recreationBookInfo', query: {bookName: buttomMiddle[1].bookName}}"
+            >
               <div class="concent">
                 <div class="book-name right-name">{{buttomMiddle[1].bookName}}</div>
                 <div class="book-desc">
                   <span>{{buttomMiddle[1].bookFullDescribe}}</span>
                 </div>
               </div>
-              <div class="book-cover">123</div>
-            </div>
+              <div class="book-cover">
+                <el-image
+                  style="width: 100%; height: 100%"
+                  :src="$imagePath+'02/'+buttomMiddle[1].bookCover"
+                  :fit="fit"
+                ></el-image>
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -240,191 +261,14 @@ export default {
       fit: "fill",
       activeIndex2: "1",
       footCarIndex: "0",
-      bookTypes: [
-        {
-          typeFlag: "21",
-          icotypeIconn: "#icon-xuanhuan",
-          typeId: "4",
-          typeLevel: "",
-          typeName: "玄幻",
-          typeParentFlag: "",
-          typeUrl: "",
-          bookNum: 1212
-        },
-        {
-          typeFlag: "22",
-          icotypeIconn: "#icon-qihuan",
-          typeId: "5",
-          typeLevel: "",
-          typeName: "奇幻",
-          typeParentFlag: "",
-          typeUrl: "",
-          bookNum: 12454
-        }
-      ],
-      weekRec: [
-        {
-          bookId: 177,
-          bookName: "至尊归元",
-          bookBigType: "101",
-          bookTypeName: "玄幻",
-          bookTag: null,
-          bookAuthor: "恋风",
-          bookCover: "至尊归元",
-          bookScore: 0.0,
-          bookSimpleDescribe: null,
-          bookFullDescribe:
-            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-          bookStatus: "00",
-          bookFreeChapterNum: 0,
-          bookChapterPrice: null,
-          bookCheckStatus: null
-        }
-      ],
-      webRec: [
-        {
-          bookId: 177,
-          bookName: "至尊归元",
-          bookBigType: "101",
-          bookTypeName: "玄幻",
-          bookTag: null,
-          bookAuthor: "恋风",
-          bookCover: "至尊归元",
-          bookScore: 0.0,
-          bookSimpleDescribe: null,
-          bookFullDescribe:
-            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-          bookStatus: "00",
-          bookFreeChapterNum: 0,
-          bookChapterPrice: null,
-          bookCheckStatus: null
-        }
-      ],
-      myMiddleTopCarousel: [
-        {
-          bookId: 177,
-          bookName: "至尊归元",
-          bookBigType: "101",
-          bookTypeName: "玄幻",
-          bookTag: null,
-          bookAuthor: "恋风",
-          bookCover: "至尊归元",
-          bookScore: 0.0,
-          bookSimpleDescribe: null,
-          bookFullDescribe:
-            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-          bookStatus: "00",
-          bookFreeChapterNum: 0,
-          bookChapterPrice: null,
-          bookCheckStatus: null
-        }
-      ],
-      topMiddle: [
-        {
-          bookId: 177,
-          bookName: "至尊归元",
-          bookBigType: "101",
-          bookTypeName: "玄幻",
-          bookTag: null,
-          bookAuthor: "恋风",
-          bookCover: "至尊归元",
-          bookScore: 0.0,
-          bookSimpleDescribe: null,
-          bookFullDescribe:
-            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-          bookStatus: "00",
-          bookFreeChapterNum: 0,
-          bookChapterPrice: null,
-          bookCheckStatus: null
-        }
-      ],
-      myMiddleFootCarousel: [
-        {
-          bookId: 177,
-          bookName: "至尊归元",
-          bookBigType: "101",
-          bookTypeName: "玄幻",
-          bookTag: null,
-          bookAuthor: "恋风",
-          bookCover: "至尊归元",
-          bookScore: 0.0,
-          bookSimpleDescribe: null,
-          bookFullDescribe:
-            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-          bookStatus: "00",
-          bookFreeChapterNum: 0,
-          bookChapterPrice: null,
-          bookCheckStatus: null
-        },
-        {
-          bookName: "第2本",
-          bookImage: "",
-          bookDesc: "第2",
-          author: "2"
-        },
-        {
-          bookName: "第3本",
-          bookImage: "",
-          bookDesc: "第3",
-          author: "3"
-        },
-        {
-          bookName: "第4本",
-          bookImage: "",
-          bookDesc: "第4",
-          author: "4"
-        },
-        {
-          bookName: "第5本",
-          bookImage: "",
-          bookDesc: "第5",
-          author: "5"
-        },
-        {
-          bookName: "第6本",
-          bookImage: "",
-          bookDesc: "第6",
-          author: "6"
-        }
-      ],
-      footCarousel: [
-        {
-          bookId: 177,
-          bookName: "至尊归元",
-          bookBigType: "101",
-          bookTypeName: "玄幻",
-          bookTag: null,
-          bookAuthor: "恋风",
-          bookCover: "至尊归元",
-          bookScore: 0.0,
-          bookSimpleDescribe: null,
-          bookFullDescribe:
-            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-          bookStatus: "00",
-          bookFreeChapterNum: 0,
-          bookChapterPrice: null,
-          bookCheckStatus: null
-        }
-      ],
-      buttomMiddle: [
-        {
-          bookId: 177,
-          bookName: "至尊归元",
-          bookBigType: "101",
-          bookTypeName: "玄幻",
-          bookTag: null,
-          bookAuthor: "恋风",
-          bookCover: "至尊归元",
-          bookScore: 0.0,
-          bookSimpleDescribe: null,
-          bookFullDescribe:
-            "至尊魔武，九天归元!身负轩辕与蚩尤之功，修无上神魔双典，楚轩誓要破灭苍穹，道魔凌天！修真十二境：筑基、开光、融合、心动、金丹、元婴、出窍、分神、合体、洞虚、渡劫、大乘！",
-          bookStatus: "00",
-          bookFreeChapterNum: 0,
-          bookChapterPrice: null,
-          bookCheckStatus: null
-        }
-      ]
+      bookTypes: [],
+      weekRec: [],
+      webRec: [],
+      myMiddleTopCarousel: [],
+      topMiddle: [],
+      myMiddleFootCarousel: [],
+      footCarousel: [],
+      buttomMiddle: []
     };
   },
   methods: {
@@ -469,7 +313,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #header {
   background-color: #b3c0d1;
   color: #333;
@@ -736,6 +580,10 @@ svg {
 #main-middle-foot .middle-foot-foot {
   height: 126px;
   width: 100%;
+  /* border: 1px solid red; */
+}
+#main-middle-foot .middle-foot-foot :hover {
+  cursor: pointer;
   /* border: 1px solid red; */
 }
 .foot-message {

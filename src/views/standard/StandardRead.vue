@@ -1,19 +1,21 @@
 <template>
   <div class="StandardHome">
-    <Header></Header>
+    <HeaderFloat></HeaderFloat>
+    <Read></Read>
   </div>
 </template>
 
 <script>
-import Header from "../../components/standard/Header";
-
+import HeaderFloat from "../../components/standard/HeaderFloat";
+import Read from "../../components/standard/Read";
 export default {
   name: "StandardHome",
   props: {
     msg: String
   },
   components: {
-    Header
+    HeaderFloat,
+    Read
   },
   data() {
     return {};

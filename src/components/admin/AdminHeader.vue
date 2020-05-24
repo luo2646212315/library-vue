@@ -30,31 +30,33 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-menu-item style="float:left;" index="/user/userInfo">
-            <i class="el-icon-s-home"></i>我的首页
+          <el-menu-item style="float:left;" index="/admin/userManagerment">
+            <i class="el-icon-s-home"></i>用户管理
           </el-menu-item>
-          <el-menu-item style="float:left" index="/user/bookshelf">
+          <el-menu-item style="float:left" index="/admin/bookManagerment">
             <svg class="icon" aria-hidden="true">
               <use xlink:href="#icon-shujia" />
-            </svg>我的书架
+            </svg>书籍管理
           </el-menu-item>
-          <el-menu-item style="float:left;" index="/user/message">
-            <i class="el-icon-bell"></i>消息中心
+          <el-menu-item style="float:left" index="/admin/uploadManagerment">
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-shujia" />
+            </svg>上传管理
           </el-menu-item>
-          <el-menu-item style="float:left;" index="/user/upload">
-            <i class="el-icon-upload"></i>我的上传
+          <el-menu-item style="float:left" index="/admin/reptileManagerment">
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-shujia" />
+            </svg>爬虫管理
           </el-menu-item>
           <el-submenu style="float:right" index="/user">
             <template slot="title">
               <i class="el-icon-s-custom"></i>
               {{userInfo.userNickName}}
             </template>
+            <el-menu-item index="/user/message">消息</el-menu-item>
+            <el-menu-item index="/user/userInfo">个人中心</el-menu-item>
+            <el-menu-item index="/user/upload">上传小说</el-menu-item>
             <el-menu-item index="/exit">退出</el-menu-item>
-          </el-submenu>
-          <el-submenu index="/admain" style="float:right" v-show="isAdmin">
-            <template slot="title">管理员</template>
-            <el-menu-item index="/userManager">用户管理</el-menu-item>
-            <el-menu-item index="/bookManager">书籍管理</el-menu-item>
           </el-submenu>
         </el-menu>
       </div>
@@ -67,13 +69,13 @@ export default {
   name: "HeaderFloat",
   created() {
     var temp = this.$route.params.type;
-    this.activeIndex = "/user/" + temp;
+    this.activeIndex = "/admin/" + temp;
   },
   data() {
     return {
       src: require("../../assets/images/logo.png"),
       fit: "fill",
-      activeIndex: "/user/userInfo",
+      activeIndex: "/admin/userManagerment",
       input: "",
       type: ""
     };
@@ -86,15 +88,14 @@ export default {
         location.reload();
         return;
       }
-      if (key != "/exit") {
-        this.activeIndex = key;
-        this.$router.push({
-          path: key
-        });
-      } else {
-        // console.log(this.userInfo);
+      if (key === "/exit") {
         this.$loginOut(this.userInfo.userId);
+      } else if (key.includes("/admin")) {
+        this.activeIndex = key;
       }
+      this.$router.push({
+        path: key
+      });
     },
     handleSelect1(key) {
       this.$router.push({
@@ -108,9 +109,6 @@ export default {
     }
   },
   computed: {
-    isAdmin() {
-      return this.$store.state.isAdmin;
-    },
     userInfo() {
       return this.$store.state.userInfo;
     }

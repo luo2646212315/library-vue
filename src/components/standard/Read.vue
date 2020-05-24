@@ -1,6 +1,6 @@
 <template>
   <div id="recreation-read">
-    <div class="left-bar" id="searchBar" :class="chooseColor+'-color'">
+    <div class="left-bar" id="searchBar" :style="'background-color:'+chooseColor">
       <div class="bar-item" slot="reference" @click="show('Menu')">
         <div class="bar-icon">
           <svg class="icon" aria-hidden="true">
@@ -17,17 +17,6 @@
         </div>
         <div>设置</div>
       </div>
-      <div class="bar-item" v-show="!bookCheck" @click="addToBookshelf()">
-        <div class="bar-icon">
-          <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-shujia_huaban" />
-          </svg>
-        </div>
-        <div>书架</div>
-      </div>
-      <div class="bar-item" v-show="bookCheck">
-        <div class="inBookshelf">已在书架</div>
-      </div>
       <div class="bar-item" @click="back()">
         <div class="bar-icon">
           <svg class="icon" aria-hidden="true">
@@ -37,27 +26,36 @@
         <div>书页</div>
       </div>
     </div>
-    <div id="middle-c" :style="'width:'+width">
+    <div id="middle-c" :style="'width:'+width+'px'">
       <div class="crum">
-        <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-top: 23px;">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>{{ bookInfo.bookTypeName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>{{ bookInfo.bookName}}</el-breadcrumb-item>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item :to="{ path: '/recreationHome' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item
+            :to="{ name: 'recreationSearch', query: { input: ''},params: {type: bookInfo.bookBigType}}"
+          >{{bookInfo.bookTypeName}}</el-breadcrumb-item>
+          <el-breadcrumb-item
+            :to="{name: 'recreationBookInfo', query: { bookName: this.bookInfo.bookName }}"
+          >{{bookInfo.bookName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>阅读</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <div class="concent" :class="chooseColor+'-color'">
+      <div class="concent" :style="'background-color:'+chooseColor">
         <div class="title">{{chapter.chapterNumber}}：{{chapter.chapterName}}</div>
-        <div v-html="chapter.chapterContent" class="con" :style="'font-size:'+fontSize+'px'"></div>
+        <div
+          v-html="chapter.chapterContent"
+          class="con"
+          :style="'font-size:'+fontSize+'px;line-height:'+2*fontSize+'px;font-family:'+ziti"
+        ></div>
       </div>
 
-      <div class="buttom-page" :class="chooseColor+'-color'">
+      <div class="buttom-page" :style="'background-color:'+chooseColor">
         <div>
           <router-link
             tag="div"
             class="page"
             :class="(currentNum-1)<1?'no-choose':''"
             style="border-left: none;"
-            :to="{ name: 'recreationRead', params: {bookName:  bookInfo.bookName,chapterNo:currentNum-1}}"
+            :to="{ name: 'standardRead', params: {bookName:  bookInfo.bookName,chapterNo:currentNum-1}}"
           >上一章</router-link>
         </div>
         <div @click="back()">
@@ -69,19 +67,95 @@
             class="page"
             :class="(currentNum+1)>totalNum?'no-choose':''"
             @click="next()"
-            :to="{ name: 'recreationRead', params: {bookName: bookInfo.bookName,chapterNo:currentNum+1}}"
+            :to="{ name: 'standardRead', params: {bookName: bookInfo.bookName,chapterNo:currentNum+1}}"
           >下一章</router-link>
         </div>
       </div>
     </div>
-    <div id="mulu-con" v-show="visibleMenu">
+    <div id="mulu-con" v-show="visibleMenu" :style="'background-color:'+chooseColor">
+      <div class="close" @click="muluClose">
+        <span class="close-icon">
+          <i class="el-icon-close close"></i>
+        </span>
+      </div>
+      <ul class="chapter-tab">
+        <li v-for="chapter in chapterList" :key="chapter.chapterNum">
+          <div class="chapter-item">
+            <a
+              :style="chapter.chapterNum===currentNum?'color:red':''"
+              :title="chapter.chapterNumber+'：'+chapter.chapterName"
+              @click="read(chapter.chapterNum)"
+            >{{chapter.chapterNumber}}：{{chapter.chapterName}}</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div id="shezhi-con" v-show="visibleShezhi" :style="'background-color:'+chooseColor">
+      <div class="close" @click="shezhiClose">
+        <span class="close-icon">
+          <i class="el-icon-close close"></i>
+        </span>
+      </div>
       <el-row>
-        <el-button type="success" @click="change('-')">-</el-button>
-
-        <el-button type="success" @click="change('+')">+</el-button>
+        <div class="title">阅读主题</div>
+        <div>
+          <ul class="c">
+            <li
+              class="color"
+              v-for="i in colorBox"
+              :style="chooseColor===i?'color:red; border: 1px solid red;':''+'background-color:'+i"
+              :key="i"
+              @click="chooseColor=i"
+            >
+              <i class="el-icon-check" v-if="chooseColor===i"></i>
+            </li>
+          </ul>
+        </div>
+      </el-row>
+      <el-row>
+        <div class="title">正文字体</div>
+        <ul style="float:left" class="c">
+          <li
+            class="ziti"
+            :style="ziti==='SimSun'?'color:red; border: 1px solid red;':''"
+            style="font-family:SimSun"
+            @click="ziti='SimSun'"
+          >宋体</li>
+          <li
+            class="ziti"
+            :style="ziti==='Microsoft Yahei'?'color:red; border: 1px solid red;':''"
+            style="font-family:Microsoft Yahei"
+            @click="ziti='Microsoft Yahei'"
+          >雅黑</li>
+          <li
+            class="ziti"
+            :style="ziti==='KaiTi'?'color:red; border: 1px solid red;':''"
+            style="font-family:KaiTi"
+            @click="ziti='KaiTi'"
+          >楷体</li>
+        </ul>
+      </el-row>
+      <el-row class="ss">
+        <div class="title">字体大小</div>
+        <ul class="right">
+          <li class="right-border" @click="jian">A-</li>
+          <li style="color:#bcbccb" class="right-border">{{fontSize}}</li>
+          <li @click="jia">A+</li>
+        </ul>
+      </el-row>
+      <el-row class="ss">
+        <div class="title">页面宽度</div>
+        <ul class="right">
+          <li @click="change('-')" class="right-border">A-</li>
+          <li style="color:#bcbccb" class="right-border">{{width}}</li>
+          <li @click="change('+')">A+</li>
+        </ul>
+      </el-row>
+      <el-row>
+        <el-button type="danger" @click="save">保存</el-button>
+        <el-button style="margin-left: 100px;" plain @click="shezhiClose">取消</el-button>
       </el-row>
     </div>
-    <div id="shezhi-con" v-show="visibleShezhi"></div>
   </div>
 </template>
 
@@ -90,12 +164,21 @@ import api from "../../api/index";
 export default {
   name: "RecreationRead",
   created() {
-    this.width = this.widthBox[this.boxIndex];
+    let str = localStorage.getItem("userHobby");
+    if (str !== null && str !== "null") {
+      let userHobby = JSON.parse(str);
+      this.chooseColor = userHobby.chooseColor;
+      this.fontSize = userHobby.fontSize;
+      this.ziti = userHobby.ziti;
+      this.width = userHobby.width;
+    } else {
+      this.width = this.widthBox[1];
+    }
     var bookName = this.$route.params.bookName;
     var chapterNo = this.$route.params.chapterNo;
-    this.currentNum = chapterNo;
-    this.getRecreationBookByName(bookName);
-    this.isInBookshelf(this.$userInfo.userId, "02", bookName);
+    this.currentNum = parseInt(chapterNo);
+    this.getStandardBookByName(bookName);
+    this.isInBookshelf(this.$store.state.userInfo.userId, "01", bookName);
   },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
@@ -107,15 +190,23 @@ export default {
     return {
       barTop: "",
       bookInfo: {},
-      bookCheck: false,
       chapter: {},
       chapterList: [],
       currentNum: 1,
-      totalNum: 10,
-      chooseColor: "first",
+      bookshelfId: "",
+      totalNum: 0,
+      colorBox: [
+        "#ede7da",
+        "#cddfcd",
+        "#cfdde1",
+        "#d0d0d0",
+        "#FDE6E0",
+        "#DCE2F1"
+      ],
+      chooseColor: "#ede7da",
+      ziti: "SimSun",
       fontSize: 12,
-      fontFamily: "",
-      widthBox: ["640px", "800px", "900px", "1280px"],
+      widthBox: [640, 800, 900, 1280],
       boxIndex: 2,
       width: "",
       visibleMenu: false,
@@ -162,48 +253,34 @@ export default {
           break;
       }
     },
-    getChapterCon(type, bookUrl, chapter) {
-      api.getChapterCon(type, bookUrl, chapter).then(res => {
+    async getChapterCon(type, bookUrl, chapter) {
+      await api.getChapterCon(type, bookUrl, chapter).then(res => {
         this.chapter = res.data[0];
       });
+      this.updateBookshelf();
     },
-    async getRecreationBookByName(name) {
-      await api.getRecreationBookByName(name).then(res => {
+    async getStandardBookByName(name) {
+      await api.getStandardBookByName(name).then(res => {
         this.bookInfo = res.data[0];
       });
-      this.getRecreationBookChapterByUrl(this.bookInfo.bookDefaultUrl);
-      this.getChapterCon("02", this.bookInfo.bookDefaultUrl, this.currentNum);
+      this.getStandardBookChapterByUrl(this.bookInfo.bookDefaultUrl);
+      this.getChapterCon("01", this.bookInfo.bookDefaultUrl, this.currentNum);
       //等待结果返回再异步请求
     },
-    getRecreationBookChapterByUrl(bookUrl) {
-      api.getRecreationBookChapterByUrl(bookUrl).then(res => {
+    getStandardBookChapterByUrl(bookUrl) {
+      api.getStandardBookChapterByUrl(bookUrl).then(res => {
         this.chapterList = res.data[0];
+        this.totalNum = this.chapterList.length;
       });
     },
     isInBookshelf(userId, bigType, bookName) {
       api.isInBookshelf(userId, bigType, bookName).then(res => {
-        this.bookCheck = res.data[0];
-      });
-    },
-    addToBookshelf() {
-      var bookshelf = {
-        bookName: this.bookInfo.bookName,
-        bookBigType: "02",
-        ownerUserId: this.$userInfo.userId,
-        chapterNum: this.currentNum,
-        bookReadTime: new Date()
-      };
-      api.addBookToBookshelf(bookshelf).then(res => {
-        if (res.data[0] === 1) {
-          this.bookCheck = true;
-        } else {
-          this.$message.error(res.message);
-        }
+        this.bookshelfId = res.data[1].bookshelfId;
       });
     },
     back() {
       this.$router.push({
-        name: "recreationBookInfo",
+        path: "/standard/bookInfo",
         query: { bookName: this.bookInfo.bookName }
       });
     },
@@ -224,12 +301,59 @@ export default {
       }
       this.width = this.widthBox[this.boxIndex];
       this.width = this.widthBox[this.boxIndex];
+    },
+    read(chapterNo) {
+      this.visibleMenu = false;
+      this.$router.push({
+        name: "standardRead",
+        params: {
+          bookName: this.bookInfo.bookName,
+          chapterNo: chapterNo
+        }
+      });
+    },
+    muluClose() {
+      this.visibleMenu = false;
+    },
+    shezhiClose() {
+      this.visibleShezhi = false;
+    },
+    jia() {
+      console.log(123);
+      if (this.fontSize + 2 <= 30) {
+        this.fontSize += 2;
+      }
+    },
+    jian() {
+      if (this.fontSize - 2 >= 14) {
+        this.fontSize -= 2;
+      }
+    },
+    save() {
+      let userHobby = {
+        chooseColor: this.chooseColor,
+        ziti: this.ziti,
+        fontSize: this.fontSize,
+        width: this.width
+      };
+      localStorage.setItem("userHobby", JSON.stringify(userHobby));
+      this.visibleShezhi = false;
+    },
+    updateBookshelf() {
+      var bookshelf = {
+        bookshelfId: this.bookshelfId,
+        chapterNum: this.currentNum,
+        chapterInfo:
+          this.chapter.chapterNumber + " " + this.chapter.chapterName,
+        bookReadTime: new Date()
+      };
+      api.updateBookshelf(bookshelf).then();
     }
   },
   watch: {
     "$route.params.chapterNo": function(val) {
       this.currentNum = val;
-      this.getChapterCon("02", this.bookInfo.bookDefaultUrl, val);
+      this.getChapterCon("01", this.bookInfo.bookDefaultUrl, val);
     },
     width: function() {
       this.$nextTick(function() {
@@ -249,7 +373,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #recreation-read {
   width: 100%;
   /* height: 700px; */
@@ -258,15 +382,17 @@ export default {
   -o-user-select: none;
   user-select: none;
 }
+#recreation-read .el-breadcrumb__item {
+  float: left;
+  margin-top: 24px;
+}
 #recreation-read #middle-c {
   margin: auto;
   height: 100%;
-  border: 1px solid red;
 }
 #recreation-read #middle-c .crum {
   height: 60px;
   width: 100%;
-  border: 1px solid red;
 }
 .left-bar {
   position: fixed;
@@ -274,12 +400,10 @@ export default {
   width: 60px;
   top: 120px;
   height: 250px;
-  border: 1px solid red;
 }
 #recreation-read #middle-c .concent {
   min-height: 500px;
   padding: 20px;
-  border: 1px solid gold;
 }
 #recreation-read #middle-c .buttom-page {
   height: 70px;
@@ -311,24 +435,7 @@ export default {
   margin-top: 11px;
   margin-bottom: 2px;
 }
-.first-color {
-  background-color: #ede7da;
-}
-.second-color {
-  background-color: #e0ce9e;
-}
-.threed-color {
-  background-color: #cddfcd;
-}
-.fourth-color {
-  background-color: #cfdde1;
-}
-.fifth-color {
-  background-color: #ebcece;
-}
-.sixth-color {
-  background-color: #d0d0d0;
-}
+
 #mulu-con {
   position: fixed;
   z-index: 999;
@@ -336,7 +443,8 @@ export default {
   top: 120px;
   width: 700px;
   height: 500px;
-  border: 2px solid green;
+  padding: 10px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 #shezhi-con {
   position: fixed;
@@ -345,7 +453,8 @@ export default {
   top: 120px;
   width: 500px;
   height: 400px;
-  border: 2px solid blue;
+  padding: 10px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 .buttom-page :hover {
   cursor: pointer;
@@ -387,5 +496,157 @@ export default {
 #recreation-read #middle-c .con {
   text-align: left;
   line-height: 30px;
+}
+#recreation-read .comment-input {
+  height: 150px;
+  border: 1px solid red;
+}
+#recreation-read .comment-list {
+  height: 500px;
+  overflow: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#recreation-read .el-drawer__header {
+  padding: 10px 20px;
+}
+.comment-list .comment-item {
+  padding: 10px 0;
+  text-align: left;
+}
+#recreation-read .count {
+  height: 50px;
+  line-height: 50px;
+  text-align: left;
+  color: #b6b1b1;
+  font-size: 12px;
+}
+#recreation-read .el-drawer__header {
+  margin-bottom: 0;
+}
+.comment-item .user {
+  height: 40px;
+  line-height: 40px;
+}
+.comment-item .con {
+  min-height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+}
+.comment-item .option {
+  height: 30px;
+  line-height: 30px;
+}
+#recreation-read .chapter-tab {
+  height: 460px;
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  overflow: auto;
+}
+#recreation-read .chapter-tab li {
+  float: left;
+  width: 48%;
+  border-bottom: 1px solid #d8dfd8;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  text-align: left;
+  font-family: PingFangSC-Regular, -apple-system, Simsun;
+}
+#recreation-read .chapter-tab li .chapter-item {
+  overflow: hidden;
+  max-width: 80%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#recreation-read .chapter-tab li .chapter-item a:hover {
+  color: red;
+}
+.chooseCurrent {
+  color: red;
+}
+#recreation-read .close {
+  height: 30px;
+  width: 100%;
+}
+#recreation-read .close .close-icon {
+  float: right;
+}
+#recreation-read .close :hover {
+  cursor: pointer;
+}
+#recreation-read .el-row {
+  height: 40px;
+  line-height: 40px;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+#shezhi-con .title {
+  float: left;
+  width: 100px;
+  font-size: 12px;
+  font-family: PingFangSC-Regular, -apple-system, Simsun;
+}
+#shezhi-con .color {
+  height: 35px;
+  width: 35px;
+  margin-left: 20px;
+  border-radius: 50%;
+  float: left;
+  border: 1px solid #bcbccb;
+}
+#shezhi-con .ziti {
+  height: 35px;
+  line-height: 35px;
+  width: 70px;
+  margin-left: 20px;
+  float: left;
+  border: 1px solid #bcbccb;
+}
+#shezhi-con ul :first-child {
+  margin-left: 0;
+}
+#shezhi-con ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#shezhi-con ul li {
+  float: left;
+}
+#shezhi-con .right {
+  width: 256px;
+  height: 100%;
+  background-color: #fcf7f0;
+  float: left;
+}
+#shezhi-con .right li {
+  width: 83px;
+  line-height: 25px;
+  height: 25px;
+  font-size: 18px;
+  margin-top: 7px;
+}
+.right-border {
+  border-right: 1px solid #bcbccb;
+}
+#shezhi-con .right li:hover {
+  color: red;
+  cursor: pointer;
+}
+#shezhi-con .right li:nth-child(2):hover {
+  color: #bcbccb;
+  cursor: default;
+}
+.close {
+  font-size: 25px;
+  font-weight: bold;
+  color: #a8a6a6;
+}
+.c li:hover {
+  color: red;
+  cursor: pointer;
 }
 </style>

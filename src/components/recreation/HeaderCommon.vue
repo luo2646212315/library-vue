@@ -5,7 +5,7 @@
         <div class="top-top">
           <div class="user" v-if="!isLogin">
             <span class="login">
-              <router-link to="/loginRegisterForget/login" tag="span">登录</router-link>
+              <span @click="$toLogin()">登录</span>
             </span> |
             <span class="register">
               <router-link to="/loginRegisterForget/register" tag="span">注册</router-link>
@@ -55,13 +55,7 @@
           <div class="middle">
             <div class="search">
               <el-input placeholder="请输入内容" v-model="input" class="input-with-select">
-                <el-select @change="s" v-model="selectType" slot="prepend" placeholder="全部">
-                  <el-option label="全部" value="0"></el-option>
-                  <el-option label="餐厅名" value="1"></el-option>
-                  <el-option label="订单号" value="2"></el-option>
-                  <el-option label="用户电话" value="3"></el-option>
-                </el-select>
-                <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
               </el-input>
             </div>
           </div>
@@ -96,7 +90,7 @@ export default {
       src: require("../../assets/images/logo.png"),
       fit: "fill",
       selectType: "",
-      input: ""
+      input: "一念永恒",
     };
   },
   methods: {
@@ -120,15 +114,27 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    qqLogin() {
-      console.log("123");
-      // api.qqLogin().then(res => {
-      //   console.log(res);
-      // });
-    },
-    goShelf() {
+    async goShelf() {
+      let flag = false;
+      await this.$loginCheck().then(res => {
+        flag = res.status;
+      });
+      if (!flag) {
+        return;
+      }
       this.$router.push({
         path: "/user/bookshelf"
+      });
+    },
+    search() {
+      this.$router.push({
+        name: "recreationSearch",
+        query: {
+          input: this.input
+        },
+        params: {
+          type: "0000"
+        }
       });
     }
   },
@@ -147,7 +153,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #header {
   background-color: rgb(84, 92, 100);
   color: #333;

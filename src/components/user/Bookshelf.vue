@@ -45,23 +45,41 @@
               style="width: 100%"
             >
               <el-table-column label="置顶" width="55"></el-table-column>
-              <el-table-column label="书籍" width="150" show-overflow-tooltip>
+              <el-table-column label="书籍" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span class="type-zi">「{{ scope.row.type }}」</span>
-                  <span class="name-zi">{{ scope.row.bookName }}</span>
+                  <span
+                    class="type-zi"
+                    @click="jumpType(scope.row.bookType)"
+                  >「{{ scope.row.bookTypeName }}」</span>
+                  <span
+                    class="name-zi"
+                    @click="jumpBookInfo(scope.row.bookName)"
+                  >{{ scope.row.bookName }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="作者" width="120" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.bookCountry }}-{{ scope.row.bookAuthoor }}</template>
+                <template slot-scope="scope">{{ scope.row.bookAuthor }}</template>
               </el-table-column>
               <el-table-column label="阅读进度" width="150" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span>{{ scope.row.schedule }}</span>
+                  <span
+                    @click="jumpRead(scope.row.bookName,scope.row.chapterNum)"
+                  >{{ scope.row.chapterInfo }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="lastReadTime" label="最近阅读时间" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="lastReadTime" label="借阅开始时间" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="lastReadTime" label="借阅结束时间" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="bookReadTime" label="最近阅读时间" width="120" show-overflow-tooltip></el-table-column>
+              <el-table-column
+                prop="lendBook.lendStartTime"
+                label="借阅开始时间"
+                width="120"
+                show-overflow-tooltip
+              ></el-table-column>
+              <el-table-column
+                prop="lendBook.lendEndTime"
+                label="借阅结束时间"
+                width="120"
+                show-overflow-tooltip
+              ></el-table-column>
             </el-table>
             <div class="page">
               <div class="block">
@@ -101,21 +119,29 @@
             >
               >
               <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column label="书籍" width="150" show-overflow-tooltip>
+              <el-table-column label="书籍" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span class="type-zi">「{{ scope.row.bookTypeName }}」</span>
-                  <span class="name-zi">{{ scope.row.bookName }}</span>
+                  <span
+                    class="type-zi"
+                    @click="jumpRecType(scope.row.bookType)"
+                  >「{{ scope.row.bookTypeName }}」</span>
+                  <span
+                    class="name-zi"
+                    @click="jumpRecBook(scope.row.bookName)"
+                  >{{ scope.row.bookName }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="作者" width="120" show-overflow-tooltip>
                 <template slot-scope="scope">{{ scope.row.bookAuthor }}</template>
               </el-table-column>
-              <el-table-column label="阅读进度" width="150" show-overflow-tooltip>
+              <el-table-column label="阅读进度" width="200" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span>{{ scope.row.chapterInfo }}</span>
+                  <span
+                    @click="jumpRecRead(scope.row.bookName,scope.row.chapterNum)"
+                  >{{ scope.row.chapterInfo }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="bookReadTime" label="最近阅读时间" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="bookReadTime" label="最近阅读时间" width="150" show-overflow-tooltip></el-table-column>
               <el-table-column label="操作" show-overflow-tooltip>
                 <template>
                   <span></span>
@@ -127,7 +153,7 @@
                 <el-checkbox v-model="checked" @change="selectAll">全选</el-checkbox>
               </span>
               <span class="item">置顶</span>
-              <span class="item">移出书架</span>
+              <span class="item" @click="deleteBookFromBookshelf">移出书架</span>
             </div>
             <div class="page">
               <div class="block">
@@ -158,7 +184,7 @@ export default {
       10
     );
     this.getUserRecreationBookshelf(
-this.$store.state.userInfo.userId,
+      this.$store.state.userInfo.userId,
       this.yuleCurrentPage,
       10
     );
@@ -176,7 +202,7 @@ this.$store.state.userInfo.userId,
       meiwenCurrentPage: 1,
       currentPage3: 1,
       currentPage4: 1,
-      checked: "",
+      checked: false,
       meiwenChecked: "",
       meiwenData: {},
       yuleData: {},
@@ -204,7 +230,6 @@ this.$store.state.userInfo.userId,
 
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(val);
     },
     selectAll() {
       if (this.checked == true) {
@@ -222,17 +247,88 @@ this.$store.state.userInfo.userId,
     },
     getUserStandardBookShelf(userId, pageNo, pageSize) {
       api.getUserStandardBookShelf(userId, pageNo, pageSize).then(res => {
+        console.log(res);
         this.meiwenData = res.data[0];
         // console.log(res);
       });
+    },
+    jumpBookInfo(val) {
+      this.$router.push({
+        path: "/standard/bookInfo",
+        query: { bookName: val }
+      });
+    },
+    jumpType(val) {
+      this.$router.push({
+        path: "/standardHome/" + val
+      });
+    },
+    jumpRead(bookName, chapterNo) {
+      this.$router.push({
+        name: "standardRead",
+        params: {
+          bookName: bookName,
+          chapterNo: chapterNo
+        }
+      });
+    },
+    jumpRecType(val) {
+      this.$router.push({
+        name: "recreationSearch",
+        params: {
+          type: val
+        },
+        query: {
+          input: ""
+        }
+      });
+    },
+    jumpRecBook(val) {
+      this.$router.push({
+        name: "recreationBookInfo",
+        query: { bookName: val }
+      });
+    },
+    jumpRecRead(bookName, chapterNo) {
+      this.$router.push({
+        name: "recreationRead",
+        params: {
+          bookName: bookName,
+          chapterNo: chapterNo
+        }
+      });
+    },
+    deleteBookFromBookshelf() {
+      let bookShelfIds = [];
+      let i = 0;
+      this.multipleSelection.forEach(res => {
+        bookShelfIds[i] = res.bookshelfId;
+        i++;
+      });
+      api.deleteBookFromBookshelf({ bookShelfIds: bookShelfIds }).then(res => {
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: "success"
+          });
+          this.getUserRecreationBookshelf(
+            this.$store.state.userInfo.userId,
+            this.yuleCurrentPage,
+            10
+          );
+        } else {
+          this.$message.error(res.message);
+        }
+      });
     }
   },
+
   watch: {
     type: function() {
       console.log("sada");
     },
     multipleSelection: function(val) {
-      if (this.yuleData.length == val.length) {
+      if (this.yuleData.list.length == val.length) {
         this.checked = true;
       } else {
         this.checked = false;
@@ -243,7 +339,7 @@ this.$store.state.userInfo.userId,
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #bookShelf {
   width: 100%;
   height: 800px;
@@ -251,8 +347,9 @@ this.$store.state.userInfo.userId,
   background: #f7f6f2;
   border: 1px solid red;
 }
+
 #bookShelf .middle {
-  width: 1000px;
+  width: 1200px;
   height: 100%;
   margin: auto;
 }
@@ -272,7 +369,7 @@ this.$store.state.userInfo.userId,
   height: 100%;
   float: right;
 }
-.right .search {
+#bookShelf .right .search {
   height: 90px;
   width: 100%;
   border: 1px solid red;

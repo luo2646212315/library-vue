@@ -12,7 +12,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #footer {
   background-color: #b3c0d1;
   color: #333;

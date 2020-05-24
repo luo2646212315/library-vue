@@ -20,14 +20,14 @@
       <el-menu-item index="/recreationHome">首页</el-menu-item>
 
       <el-menu-item
-        :index="'/recreation/search/'+bookType.typeFlag"
+        :index="'/standardHome/'+bookType.typeFlag"
         v-for="bookType in bookTypes.slice(0,4)"
         :key="bookType.typeId"
       >{{bookType.typeName}}</el-menu-item>
       <el-submenu index="/more" v-show="bookTypes.slice(4).length>0">
         <template slot="title">更多</template>
         <el-menu-item
-          :index="'/recreation/search/'+bookType.typeFlag"
+          :index="'/standardHome/'+bookType.typeFlag"
           v-for="bookType in bookTypes.slice(4)"
           :key="bookType.typeId"
         >{{bookType.typeName}}</el-menu-item>
@@ -74,7 +74,7 @@ import api from "../../api/index";
 export default {
   name: "HeaderFloat",
   created() {
-    this.getBookTypes("02");
+    this.getBookTypes("01");
   },
   data() {
     return {
@@ -86,18 +86,18 @@ export default {
     };
   },
   methods: {
-    async handleSelect(key) {
+    handleSelect(key) {
       var nowUrl = this.$route.path;
       if (nowUrl === key) {
         location.reload();
         return;
       }
-      if (key.includes("/recreation/search/")) {
-        let type = key.replace("/recreation/search/", "");
+      if (key.includes("/standardHome/")) {
+        let type = key.replace("/standardHome/", "");
         this.$router.push({
-          name: "recreationSearch",
+          name: "StandardHome",
           params: {
-            type: type
+            bookType: type
           },
           query: {
             input: ""
@@ -105,15 +105,6 @@ export default {
         });
       } else {
         if (key != "/exit") {
-          if (key.includes("/user/bookshelf")) {
-            let flag = false;
-            await this.$loginCheck().then(res => {
-              flag = res.status;
-            });
-            if (!flag) {
-              return;
-            }
-          }
           this.$router.push({
             path: key
           });
@@ -130,12 +121,12 @@ export default {
     },
     search() {
       this.$router.push({
-        name: "recreationSearch",
+        name: "StandardHome",
         query: {
           input: this.input
         },
         params: {
-          type: "0000"
+          bookType: "0000"
         }
       });
     }

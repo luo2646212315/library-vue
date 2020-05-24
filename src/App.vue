@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -12,6 +11,10 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 #nav {
@@ -22,14 +25,14 @@
   font-weight: bold;
   color: #2c3e50;
 }
-a{
+a {
   color: black;
 }
 #nav a.router-link-exact-active {
   color: #42b983;
 }
-a{
- text-decoration: none;
+a {
+  text-decoration: none;
 }
 .icon {
   width: 1em;

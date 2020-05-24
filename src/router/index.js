@@ -1,7 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import RecreationHome from '../views/recreation/RecreationHome.vue'
-
+/**
+ * 重写路由的push方法
+ */
+const routerPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error => error)
+}
 Vue.use(VueRouter)
 
 const routes = [
@@ -16,12 +22,11 @@ const routes = [
     component: RecreationHome,
   },
   {
-    path: '/recreation/search',
+    path: '/recreation/search/:type',
     name: 'recreationSearch',
     component: () => import("../views/recreation/Search.vue")
-  }, 
+  },
   {
-
     path: '/recreation/bookInfo',
     name: 'recreationBookInfo',
     component: () => import("../views/recreation/BookInfo.vue")
@@ -32,7 +37,12 @@ const routes = [
     path: '/recreation/read/:bookName/:chapterNo',
     name: 'recreationRead',
     component: () => import("../views/recreation/RecreationRead")
+  },
+  {
 
+    path: '/standard/read/:bookName/:chapterNo',
+    name: 'standardRead',
+    component: () => import("../views/standard/StandardRead")
   },
   {
     path: '/standardHome/:bookType',
@@ -88,6 +98,11 @@ const routes = [
     path: '/user/:type',
     name: 'User',
     component: () => import('../views/User')
+  },
+  {
+    path: '/admin/:type',
+    name: 'Admin',
+    component: () => import('../views/Admin')
   },
   {
     path: '/middlePage',

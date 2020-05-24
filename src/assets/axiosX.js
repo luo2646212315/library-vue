@@ -16,8 +16,8 @@ export default {
    */
   get(url, params) {
     return new Promise((resolve, reject) => {
-      axios.get(url,{
-        params:params
+      axios.get(url, {
+        params: params
       }).then(res => {
         resolve(res.data)
       }).catch(err => {
@@ -25,6 +25,7 @@ export default {
       })
     })
   },
+
   /**
    * post方法，对应post请求,表单提交
    * @param {String} url [请求的url地址]
@@ -32,7 +33,7 @@ export default {
    */
   postFrom(url, params) {
     return new Promise((resolve, reject) => {
-      axios.post(url, qs.stringify(params),{
+      axios.post(url, qs.stringify(params), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'// ;boundary=----WebKitFormBoundaryQ6d2Qh69dv9wad2u
         }
@@ -54,7 +55,7 @@ export default {
     return new Promise((resolve, reject) => {
       axios.post(url, JSON.stringify(params), {
         headers: {
-          'Content-Type': 'application/json'// ;boundary=----WebKitFormBoundaryQ6d2Qh69dv9wad2u
+          'Content-Type': 'application/json'
         }
       })
         .then(res => {
@@ -120,7 +121,7 @@ export default {
    */
   delete(url, params) {
     return new Promise((resolve, reject) => {
-      axios.delete(url, qs.stringify(params),{
+      axios.delete(url, { params }, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'// ;boundary=----WebKitFormBoundaryQ6d2Qh69dv9wad2u
         }

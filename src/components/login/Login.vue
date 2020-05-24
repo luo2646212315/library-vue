@@ -48,7 +48,7 @@
                   <use xlink:href="#icon-weixin" />
                 </svg>
               </span>
-              <span>
+              <span @click="qqLogin">
                 <svg class="icon" aria-hidden="true">
                   <use xlink:href="#icon-QQ" />
                 </svg>
@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import { openWindow } from "../../window/openWindow";
 import api from "../../api/index";
 import router from "../../router";
 export default {
@@ -138,12 +139,42 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    qqLogin() {
+      console.log("123");
+      // let url;
+      api.qqLogin().then(res => {
+        console.log(res);
+        openWindow(res, "QQ登录", 540, 540);
+        window.addEventListener("message", this.loginQQHandler, false);
+      });
+    },
+    loginQQHandler(e) {
+      console.log(e);
+      let res = e.data;
+      if (res.status) {
+        this.$message({
+          message: res.message,
+          type: "success"
+        });
+        //添加vuex
+        let userInfo = res.data[0];
+        this.$store.commit("update", userInfo);
+        //添加localstorge
+        localStorage.setItem("library-token", res.data[1]);
+        router.push({
+          path: this.redirect
+        });
+      } else {
+        this.$message.error(res.errorMessage);
+      }
+      window.removeEventListener("message", this.loginQQHandler, false);
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 #concent {
   height: 430px;
   width: 620px;
@@ -171,5 +202,8 @@ a :hover {
 }
 #other-login span {
   margin-left: 20px;
+}
+#other-login span :hover {
+  cursor: pointer;
 }
 </style>

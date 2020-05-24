@@ -40,6 +40,7 @@
               >
                 <el-form-item label="书籍名称" prop="bookName">
                   <el-input v-model="ruleForm1.bookName"></el-input>
+                  <span>(注：名著会自动加上"《》")</span>
                 </el-form-item>
                 <el-form-item label="书籍大类别" prop="bookBigType">
                   <el-radio-group v-model="ruleForm1.bookBigType">
@@ -163,38 +164,52 @@
               <el-form-item label="系统审核">
                 <el-select v-model="search.systemCheckStatus" placeholder="全部">
                   <el-option label="全部" value></el-option>
-                  <el-option label="通过" value="shanghai"></el-option>
-                  <el-option label="不通过" value="beijing"></el-option>
+                  <el-option label="未审核" value="01"></el-option>
+                  <el-option label="通过" value="11"></el-option>
+                  <el-option label="不通过" value="00"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="管理员审核">
                 <el-select v-model="search.adminCheckStatus" placeholder="全部">
                   <el-option label="全部" value></el-option>
-                  <el-option label="通过" value="shanghai"></el-option>
-                  <el-option label="不通过" value="beijing"></el-option>
+                  <el-option label="未审核" value="01"></el-option>
+                  <el-option label="通过" value="11"></el-option>
+                  <el-option label="不通过" value="00"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" plain>查询</el-button>
+                <el-button type="primary" plain @click="searchButton">查询</el-button>
               </el-form-item>
             </el-form>
           </div>
           <el-table :data="tableData" style="width: 100%">
             <el-table-column prop="ownerBookNames" label="书籍名称" width="180" show-overflow-tooltip></el-table-column>
             <el-table-column prop="urlBookChapterNum" label="章节数" width="180" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="bookBigType" label="书籍大类别" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="bookType" label="书籍类别" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="systemCheckStatus" label="系统审核" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="adminCheckStatus" label="管理员审核" show-overflow-tooltip></el-table-column>
+            <el-table-column label="书籍大类别" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <span>{{ scope.row.bookBigType|transFromBookBigTypeFilter }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="bookTypeName" label="书籍类别" show-overflow-tooltip></el-table-column>
+            <el-table-column label="系统审核" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <span>{{ scope.row.systemCheckStatus|transFromCheckFilter }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="管理员审核" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <span>{{ scope.row.adminCheckStatus|transFromCheckFilter }}</span>
+              </template>
+            </el-table-column>
           </el-table>
           <div class="page">
             <div class="block">
               <el-pagination
                 @current-change="handleCurrentChange"
-                :current-page.sync="currentPage"
-                :page-size="5"
+                :current-page.sync="search.pageNo"
+                :page-size="search.pageSize"
                 layout="total,prev, pager, next, jumper"
-                :total="20"
+                :total="totalNum"
               ></el-pagination>
             </div>
           </div>
@@ -207,10 +222,12 @@
 <script>
 import api from "../../api/index";
 export default {
-  name: "Bookshelf",
+  name: "BookUpload",
   created() {
+    this.search.uploadUserId = this.$store.state.userInfo.userId;
     this.getBookType("01");
     this.getBookType("02");
+    this.selectUploadByOther();
   },
   props: {
     msg: String
@@ -226,7 +243,7 @@ export default {
       fileExist: false,
       uploadState: false,
       uploadMsg: "",
-      currentPage: 1,
+      totalNum: 0,
       stypeSelect: [
         {
           typeFlag: "101",
@@ -257,7 +274,10 @@ export default {
       search: {
         ownerBookNames: "",
         systemCheckStatus: "",
-        adminCheckStatus: ""
+        adminCheckStatus: "",
+        uploadUserId: 0,
+        pageNo: 1,
+        pageSize: 10
       },
       tableData: [
         {
@@ -332,7 +352,6 @@ export default {
             console.log("error submit!!");
             return false;
           }
-          this.active++;
         });
         this.resetForm("ruleForm2");
         this.active++;
@@ -421,7 +440,7 @@ export default {
       });
       words = words.substring(0, words.lastIndexOf(","));
       const formData = new FormData();
-      formData.append("bookName", this.ruleForm1.bookName);
+      formData.append("bookName", "《" + this.ruleForm1.bookName + "》");
       formData.append("bookType", this.ruleForm2.sBookType);
       formData.append("authorCountry", this.ruleForm2.sBookAuthorCountry);
       formData.append("bookKeyWords", words);
@@ -435,7 +454,12 @@ export default {
         console.log(res);
         this.uploadState = res.status;
         this.uploadMsg = res.message;
-        if (!res.status) {
+        if (res.status) {
+          this.$message({
+            message: "书籍上传成功！",
+            type: "success"
+          });
+        } else {
           this.$message.error(res.message);
         }
       });
@@ -454,21 +478,32 @@ export default {
         console.log(res);
         this.uploadState = res.status;
         this.uploadMsg = res.message;
-        if (!res.status) {
+        if (res.status) {
+          this.$message({
+            message: "书籍上传成功！",
+            type: "success"
+          });
+        } else {
           this.$message.error(res.message);
         }
       });
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.selectUploadByOther();
+    },
+    selectUploadByOther() {
+      api.selectUploadByOther(this.search).then(res => {
+        this.tableData = res.data[0].list;
+        this.totalNum = res.data[0].total;
+      });
+    },
+    searchButton() {
+      this.selectUploadByOther();
     }
   },
   watch: {
-    fileList: function(val) {
-      console.log(val);
-    },
     "ruleForm1.bookBigType": function(val) {
-      console.log(val);
       this.bookTypeCheck = val;
     },
     "ruleForm2.sKeyWords": function(val) {
@@ -486,11 +521,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-.el-table td,
-.el-table th {
-  text-align: center;
-}
+<style scoped>
 .hidden {
   display: none;
 }
@@ -517,21 +548,28 @@ export default {
   width: 1000px;
   height: 100%;
   margin: auto;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 #upload .upload-middle .left {
   width: 16%;
   height: 100%;
   float: left;
-  border: 1px solid red;
+  /* border: 1px solid red; */
+}
+#upload .upload-middle .left ul {
+  margin-top: 100px;
 }
 #upload .upload-middle .right {
   width: 80%;
   height: 100%;
   float: right;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
-
+#upload .upload-middle .right .search {
+  height: 90px;
+  width: 100%;
+  /* border: 1px solid red; */
+}
 .el-step__head {
   text-align: left;
   margin-left: 10px;
@@ -561,10 +599,9 @@ export default {
 .el-form--inline .el-form-item {
   margin-right: 20px;
 }
-#upload .upload-middle .right .page{
+#upload .upload-middle .right .page {
   height: 60px;
   padding-top: 25px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
-
 </style>

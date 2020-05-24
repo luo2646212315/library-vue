@@ -49,7 +49,7 @@
         </el-submenu>
         <div class="loginReg" v-if="!isLogin">
           <span class="login">
-            <router-link to="/loginRegisterForget/login" tag="span">登录</router-link>
+            <span @click="$toLogin()">登录</span>
           </span> |
           <span class="register">
             <router-link to="/loginRegisterForget/register" tag="span">注册</router-link>
@@ -64,12 +64,6 @@
     </div>
     <div class="search">
       <el-input placeholder="请输入内容" v-model="input" class="input-with-select">
-        <el-select @change="s" v-model="selectType" slot="prepend" placeholder="全部">
-          <el-option label="全部" value="0"></el-option>
-          <el-option label="餐厅名" value="1"></el-option>
-          <el-option label="订单号" value="2"></el-option>
-          <el-option label="用户电话" value="3"></el-option>
-        </el-select>
         <el-button slot="append" icon="el-icon-search"></el-button>
       </el-input>
     </div>
@@ -101,13 +95,22 @@ export default {
     s() {
       console.log(this.selectType + "-----------");
     },
-    handleSelect(key) {
+    async handleSelect(key) {
       var nowUrl = this.$route.path;
       if (nowUrl === key) {
         location.reload();
         return;
       }
       if (key != "/exit") {
+        if (key.includes("/user/bookshelf")) {
+          let flag = false;
+          await this.$loginCheck().then(res => {
+            flag = res.status;
+          });
+          if (!flag) {
+            return;
+          }
+        }
         this.$router.push({
           path: key
         });
@@ -131,14 +134,14 @@ export default {
       deep: true
     }
   },
-  computed:{
-    isLogin(){
+  computed: {
+    isLogin() {
       return this.$store.state.isLogin;
     },
-    isAdmin(){
+    isAdmin() {
       return this.$store.state.isAdmin;
     },
-    userInfo(){
+    userInfo() {
       return this.$store.state.userInfo;
     }
   }
@@ -146,7 +149,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #header-bg {
   width: 100%;
   height: 350px;
@@ -184,7 +187,7 @@ export default {
   color: white;
 }
 .search {
-  width: 40%;
+  width: 30%;
   margin: auto;
   margin-top: 130px;
 }

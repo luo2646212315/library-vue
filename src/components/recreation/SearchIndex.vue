@@ -3,64 +3,73 @@
     <div class="middle">
       <div class="left">
         <div>
-          <div class="book-item">
+          <div class="book-item" v-for="item in searchData" :key="item.bookId">
             <div class="left-cover">
-              <el-image style="width: 100%; height: 100%" src="images/11.jpg" :fit="fit"></el-image>
+              <el-image
+                v-if="item.bookCover!==undefined"
+                style="width: 100%; height: 100%"
+                :src="$imagePath+'02/'+item.bookCover"
+                :fit="fit"
+              ></el-image>
             </div>
             <div class="middle-concent">
               <div class="book-name">
-                <span>宋末大丈夫</span>
+                <router-link
+                  tag="a"
+                  :title="item.bookName"
+                  :to="{ name: 'recreationBookInfo', query: {bookName: item.bookName}}"
+                >{{item.bookName}}</router-link>
               </div>
               <div class="book-types">
                 <span class="h">
                   <span>
-                    <i class="el-icon-s-custom"></i>迪巴拉爵士
+                    <i class="el-icon-s-custom"></i>
+                    {{item.bookAuthor}}
                   </span>
                 </span>
                 <span class="c">|</span>
                 <span class="h">
-                  <span>历史</span>
+                  <span>{{item.bookTypeName}}</span>
                 </span>
                 <span class="c">|</span>
-                <span>连载</span>
+                <span>{{item.bookStatus|transFromBookStateFilter}}</span>
               </div>
-              <div class="book-desc">新书请到这里。大家先收藏，新书发布时间待定。</div>
-              <div class="book-update">
-                <a href="#">
-                  <span>最新更新</span>
-                  <span>【新书说明】</span>
-                </a>
-                <span>·2020-04-01</span>
-              </div>
+              <div class="book-desc">{{item.bookFullDescribe}}</div>
             </div>
             <div class="right-button">
-              <div class="top-dex">
+              <!-- <div class="top-dex">
                 <div class="zi-num">
                   <span class="num">120万</span>总字数
                 </div>
                 <div class="zi-num">
                   <span class="num">5.5万</span>总推荐
                 </div>
-              </div>
+              </div>-->
               <div class="buttom-button">
-                <el-button style="float:left" size="medium" type="danger">加入书架</el-button>
-                <el-button style="float:right" size="medium" type="primary" plain>书籍详情</el-button>
+                <el-button
+                  style="float:left"
+                  size="medium"
+                  type="danger"
+                  @click="read(item.bookName)"
+                >立即阅读</el-button>
+                <el-button
+                  style="float:right"
+                  size="medium"
+                  type="primary"
+                  plain
+                  @click="show(item.bookName)"
+                >书籍详情</el-button>
               </div>
             </div>
           </div>
-          <div class="book-item"></div>
-          <div class="book-item"></div>
-          <div class="book-item"></div>
-          <div class="book-item"></div>
           <div class="page">
             <div class="block">
               <el-pagination
-                @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage"
-                :page-size="5"
+                :page-size="pageSize"
                 layout="total,prev, pager, next, jumper"
-                :total="20"
+                :total="total"
               ></el-pagination>
             </div>
           </div>
@@ -72,21 +81,27 @@
         </div>
         <div class="concent">
           <ul class="concent-ul">
-            <li>
-              <div class="left-cover"></div>
+            <li v-for="item in rightData" :key="item.bookId">
+              <div class="left-cover" v-if="item.bookCover!==undefined">
+                <el-image :src="$imagePath+'02/'+item.bookCover" :fit="fit"></el-image>
+              </div>
               <div class="right-concent">
                 <div class="book-name h">
-                  <span>斗破苍穹</span>
+                  <router-link
+                    tag="a"
+                    :title="item.bookName"
+                    :to="{ name: 'recreationBookInfo', query: {bookName: item.bookName}}"
+                  >{{item.bookName}}</router-link>
                 </div>
                 <div class="book-author h">
                   <span>
-                    <i class="el-icon-s-custom"></i>天蚕土豆
+                    <i class="el-icon-s-custom"></i>
+                    {{item.bookAuthor}}
                   </span>
                 </div>
-                <div class="book-desc">人生本来没有什么太多的追求，一块羊油饼、</div>
+                <div class="book-desc">{{item.bookFullDescribe}}</div>
               </div>
             </li>
-            <li>2</li>
           </ul>
         </div>
       </div>
@@ -95,33 +110,116 @@
 </template>
 
 <script>
+import api from "../../api/index";
 export default {
   name: "SearchIndex",
+  created() {
+    var bookType = this.$route.params.type;
+    var input = this.$route.query.input;
+    this.type = bookType;
+    this.input = input;
+    this.getRecreationBook();
+    this.getSomeRecreationBook(5);
+  },
   data() {
     return {
       fit: "fill",
       currentPage: 1,
-      input: ""
+      input: "",
+      type: "",
+      total: 0,
+      pageSize: 5,
+      chapterNo: 1,
+      searchData: [],
+      rightData: []
     };
   },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.getRecreationBook();
+    },
+    getRecreationBook() {
+      if (this.type === "0000") {
+        if (this.input === "") {
+          this.input = "一念永恒";
+        }
+        api
+          .getBookByNameOrAuthor(this.input, this.currentPage, this.pageSize)
+          .then(res => {
+            if (res.status) {
+              this.searchData = res.data[0].list;
+              this.total = res.data[0].total;
+            }
+          });
+      } else {
+        api
+          .getRecreationBookByType(this.type, this.currentPage, this.pageSize)
+          .then(res => {
+            console.log(res);
+            if (res.status) {
+              this.searchData = res.data[0].list;
+              this.total = res.data[0].total;
+            }
+          });
+      }
+    },
+    getSomeRecreationBook(num) {
+      api.getSomeRecreationBook(num).then(res => {
+        console.log(res);
+        if (res.status) {
+          this.rightData = res.data[0];
+        }
+      });
+    },
+    show(val) {
+      this.$router.push({
+        name: "recreationBookInfo",
+        query: { bookName: val }
+      });
+    },
+    async read(val) {
+      await this.$isInBookshelf(
+        this.$store.state.userInfo.userId,
+        "02",
+        val
+      ).then(res => {
+        console.log(res);
+        this.bookCheck = res.data[0];
+        if (this.bookCheck) {
+          this.chapterNo = res.data[1].chapterNum;
+        }
+      });
+      this.$router.push({
+        name: "recreationRead",
+        params: { bookName: val, chapterNo: this.chapterNo }
+      });
+    }
+  },
+  watch: {
+    $route: {
+      handler() {
+        var bookType = this.$route.params.type;
+        var input = this.$route.query.input;
+        this.type = bookType;
+        this.input = input;
+        this.currentPage = 1;
+        this.getRecreationBook();
+        //深度监听，同时也可监听到param参数变化
+      },
+      deep: true
     }
   }
 };
-</script>
+</script >
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 #searchIndex {
-  height: 1050px;
+  min-height: 750px;
   width: 80%;
   margin: auto;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 #searchIndex .top-input {
   width: 40%;
@@ -130,7 +228,7 @@ export default {
   margin: auto;
 }
 #searchIndex .middle {
-  height: 1050px;
+  height: 100%;
   width: 100%;
 }
 #searchIndex .middle .left {
@@ -143,7 +241,7 @@ export default {
   height: 100%;
   width: 20%;
   float: right;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 #searchIndex .middle .left .book-item {
   padding-top: 25px;
@@ -189,8 +287,12 @@ export default {
 
 .book-item .middle-concent .book-desc {
   font-size: 14px;
-  height: 50px;
+  height: 75px;
   margin-bottom: 10px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 .book-item .middle-concent .book-update {
   font-size: 12px;
@@ -224,7 +326,7 @@ export default {
 .page {
   height: 60px;
   padding-top: 25px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 .right .title {
   height: 25px;
@@ -235,8 +337,6 @@ export default {
   margin-top: 20px;
 }
 .right .concent {
-  height: 800px;
-  border: 1px solid red;
 }
 .right .concent .concent-ul {
   list-style: none;
@@ -254,16 +354,20 @@ export default {
   width: 75px;
   height: 100%;
   margin-right: 12px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 .concent-ul .right-concent {
   float: left;
   width: 60%;
   height: 100%;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   text-align: left;
 }
 .concent-ul .right-concent .book-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
   font-size: 18px;
   height: 30px;
 }
@@ -275,5 +379,9 @@ export default {
 .concent-ul .right-concent .book-desc {
   font-size: 12px;
   height: 50px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 </style>

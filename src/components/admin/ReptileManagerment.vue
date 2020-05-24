@@ -1,6 +1,6 @@
 <template>
-  <div id="message">
-    <div class="message-middle">
+  <div id="reptileManager">
+    <div class="reptileManager-middle">
       <div class="left"></div>
       <div class="right"></div>
     </div>
@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: "Message",
+  name: "reptileManager",
   created() {},
   props: {
     msg: String
@@ -23,11 +23,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#message {
+#reptileManager {
   width: 100%;
   height: 800px;
 }
-#message .message-middle {
+#reptileManager .reptileManager-middle {
   width: 1000px;
   height: 100%;
   margin: auto;

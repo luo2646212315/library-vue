@@ -8,8 +8,12 @@
         </el-breadcrumb>
       </div>
       <div class="middle-con">
-        <div class="left-cover">
-          <el-image style="width: 100%; height: 100%" src="../images/11.jpg" :fit="fit"></el-image>
+        <div class="left-cover" v-if="bookInfo.bookCover!==undefined">
+          <el-image
+            style="width: 100%; height: 100%"
+            :src="$imagePath+'01/'+bookInfo.bookCover"
+            :fit="fit"
+          ></el-image>
         </div>
         <div class="right-desc">
           <div class="book-name">{{bookInfo.bookName}}</div>
@@ -35,9 +39,12 @@
       </div>
       <div class="buttom-button">
         <el-row>
-          <el-button type="primary" @click="dialogLendVisible = true">立即借阅</el-button>
+          <el-button type="primary" @click="lend" :disabled="bookCheck">{{bookCheck?'已在书架':'立即借阅'}}</el-button>
           <el-button type="success" @click="dialogChapterVisible = true">目录查看</el-button>
         </el-row>
+        <div style="margin-top: 15px;">
+          <span>(注：此页面仅能查看书籍信息，观看内容请前往书架！)</span>
+        </div>
       </div>
       <div id="standard-book">
         <el-dialog title="图书借阅" :visible.sync="dialogLendVisible" width="30%">
@@ -105,13 +112,27 @@ export default {
   created() {
     var bookName = this.$route.query.bookName;
     this.getStandardBookByName(bookName);
+    if (this.$store.state.isLogin) {
+      this.$isInBookshelf(
+        this.$store.state.userInfo.userId,
+        "01",
+        bookName
+      ).then(res => {
+        if (res.status) {
+          this.bookCheck = res.data[0];
+        }
+      });
+    }
   },
   data() {
     return {
       fit: "fill",
       dialogLendVisible: false,
       dialogChapterVisible: false,
+      bookCheck: false,
       bookInfo: {},
+      userWallet: {},
+      timer: "",
       chapterList: [
         {
           chapterNum: 1,
@@ -164,13 +185,38 @@ export default {
       var ss = this.ruleForm.time.getTime() - new Date().getTime();
       var sss = ss / (3600 * 1000 * 24) + 2;
       var day = parseInt(sss);
-      this.totalMoney = day * 1;
+      this.totalMoney = this.$NumberMul(day, 1);
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.dialogLendVisible = false;
-          alert("submit!");
+          let s = this.$NumberSub(
+            this.userWallet.walletBalance,
+            this.totalMoney
+          );
+          if (s < 0) {
+            this.$message.error(
+              "对不起，余额不足,您的余额为" + this.userWallet.walletBalance
+            );
+          } else {
+            this.dialogLendVisible = false;
+            //添加到书架
+            var bookshelf = {
+              bookName: this.bookInfo.bookName,
+              bookBigType: "01",
+              bookAuthor: this.bookInfo.bookAuthor,
+              bookType: this.bookInfo.bookType,
+              ownerUserId: this.$store.state.userInfo.userId,
+              bookReadTime: new Date(),
+              lendBook: {
+                lendEndTime: this.ruleForm.time,
+                lendMoney: this.totalMoney
+              }
+            };
+            this.$addBookInShelf(bookshelf).then(r => {
+              this.bookCheck = r;
+            });
+          }
         } else {
           console.log("error submit!!");
           return false;
@@ -186,21 +232,94 @@ export default {
       api.getStandardBookChapterByUrl(bookUrl).then(res => {
         this.chapterList = res.data[0];
       });
+    },
+    async lend() {
+      let flag = false;
+      await this.$loginCheck().then(res => {
+        flag = res.status;
+      });
+      if (!flag) {
+        return;
+      }
+      this.checkUserHaveBook().then(r => {
+        if (r) {
+          //加入书架
+          this.$message({
+            message: "您已拥有该书籍，直接加入书架---时长1周",
+            type: "success"
+          });
+          let date = new Date();
+          date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
+          var bookshelf = {
+            bookName: this.bookInfo.bookName,
+            bookBigType: "01",
+            bookAuthor: this.bookInfo.bookAuthor,
+            bookType: this.bookInfo.bookType,
+            ownerUserId: this.$store.state.userInfo.userId,
+            bookReadTime: new Date(),
+            lendBook: {
+              lendEndTime: date,
+              lendMoney: 0.0
+            }
+          };
+          this.$addBookInShelf(bookshelf).then(r => {
+            this.bookCheck = r;
+          });
+        } else {
+          this.$message({
+            message: "您还没有该书籍哦！请填写借阅信息",
+            type: "warning"
+          });
+          let _this = this;
+          this.timer = setTimeout(() => {
+            _this.dialogLendVisible = true;
+          }, 1000);
+          api
+            .getUserWalletByUserId(_this.$store.state.userInfo.userId)
+            .then(res => {
+              if (res.status) {
+                _this.userWallet = res.data[0];
+              }
+            });
+        }
+      });
+    },
+    async checkUserHaveBook() {
+      let flag = false;
+      await api
+        .checkUserHaveBook(
+          this.bookInfo.bookName,
+          "01",
+          this.$store.state.userInfo.userId
+        )
+        .then(res => {
+          if (res.status) {
+            flag = res.data[0];
+          }
+        });
+      return flag;
     }
   },
   watch: {
-    "ruleForm.time": function() {
-      this.settlement();
+    "ruleForm.time": function(val) {
+      if (val === null) {
+        this.totalMoney = 0;
+      } else {
+        this.settlement();
+      }
     },
     bookInfo: function() {
       this.getStandardBookChapterByUrl(this.bookInfo.bookDefaultUrl);
     }
+  },
+  beforeDestroy() {
+    clearTimeout(this.timer);
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 #bookDesc {
   height: 630px;
   width: 100%;
