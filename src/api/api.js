@@ -180,3 +180,11 @@ export const updateBookshelf = params => {
 export const deleteBookFromBookshelf = (bookShelfIds) => {
     return axios.postFrom(base.baseUrl + "/bookshelf/deleteBookFromBookshelf", bookShelfIds)
 }
+//笔趣阁爬虫
+export const startBQ = BQ => {
+    return axios.get(base.baseUrl + "/thread/startBQ", BQ)
+}
+//世界名著网爬虫
+export const startWorld = WD => {
+    return axios.get(base.baseUrl + "/thread/startWorld", WD)
+}
